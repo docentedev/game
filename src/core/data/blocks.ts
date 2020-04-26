@@ -1,6 +1,6 @@
 export default [
     { pos: { x: 0, y: 0 } },
-    { pos: { x: 0, y: 3 } },
+    //{ pos: { x: 0, y: 3 } },
     { pos: { x: 1, y: 2 } },
     { imageId: 'wall2', pos: { x: 1, y: 3 } },
     { imageId: 'wall2', pos: { x: 2, y: 0 } },

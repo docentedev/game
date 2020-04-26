@@ -10,8 +10,8 @@ export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     target: HTMLElement;
-    dim: Dim = { x: 20, y: 30 };
-    blockSize: number = 30;
+    dim: Dim = { x: 10, y: 15 };
+    blockSize: number = 38;
     fps: number = 20;
     zAxys: ZAxys;
     inputController: InputController;
@@ -22,6 +22,8 @@ export class Game {
     constructor(id: string) {
 
         document.body.style.backgroundColor = 'black'
+        document.body.style.margin = '0'
+        document.body.style.padding ='0'
 
         this.canvas = document.createElement('canvas');
         this.ctx = this.getCtx();
