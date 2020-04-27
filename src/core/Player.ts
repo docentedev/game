@@ -1,8 +1,14 @@
 import { Dim, Pos, BlockClassProp, IPlayer } from "./types";
 import { Game } from "./Game";
 import Block from "./Block";
+import PlayerColisionTest from "./PlayerColisionTest";
 
 class Player implements IPlayer {
+
+    // CONFIGURABLES
+    // tamaño del blocker de sprite del player
+    imageTileSize: number = 48
+
     dim: Dim
     pos: Pos
     ctx: CanvasRenderingContext2D
@@ -16,10 +22,11 @@ class Player implements IPlayer {
     imageId: string = 'grass';
     size: any = { a: 0, b: 0, c: 31, d: 31 }
 
-    currentImgPass: number = 0;
-    currentMov: number = 0;
+    // donde esta minrando el player
+    gazeDirection : 'u' | 'b' | 'l' | 'r' | 'c' = 'b'
 
-    imageTileSize: number = 48
+    // el paso de la imagen para animar
+    currentImgPass: number = 0;
 
     allowMove: boolean = true
 
@@ -40,7 +47,7 @@ class Player implements IPlayer {
         this.ctx = props.game.ctx
         this.blockSize = props.game.blockSize;
         this.imageId = props.imageId || 'player_01'
-        this.velocity = this.velocity * this.blockSize;
+        this.velocity = this.velocity * this.blockSize
 
         this.getCurrentBlocks();
         this.moveInterval()
@@ -60,6 +67,7 @@ class Player implements IPlayer {
             d: this.adjacentBlocks.down.map((b: Block) => b.pos),
             l: this.adjacentBlocks.left.map((b: Block) => b.pos),
             r: this.adjacentBlocks.right.map((b: Block) => b.pos),
+            gazeDirection: this.gazeDirection,
         }
     }
 
@@ -73,22 +81,31 @@ class Player implements IPlayer {
         const result = this.getCurrentBlocks();
         this.playMove = true;
 
-        if (data['38'] && result.moveUp) {
+        if (data['38']) {
+            this.gazeDirection = 'u'
             this.size.b = this.imageTileSize * 2
+            if (result.moveUp)
             this.pos.y = this.pos.y - this.velocity;
         }
-        if (data['37'] && result.moveLeft) {
+        if (data['37']) {
+            this.gazeDirection = 'l'
             this.size.b = this.imageTileSize
+            if(result.moveLeft)
             this.pos.x = this.pos.x - this.velocity
         }
-        if (data['39'] && result.moveRight) {
+        if (data['39']) {
+            this.gazeDirection = 'r'
             this.size.b = this.imageTileSize * 3
+            if(result.moveRight)
             this.pos.x = this.pos.x + this.velocity
         }
-        if (data['40'] && result.moveDown) {
-            this.size.b = 0
-            this.pos.y = this.pos.y + this.velocity;
 
+        // paso
+        if (data['40']) {
+            this.gazeDirection = 'b' // direccion de mirada
+            this.size.b = 0 // asignacion de animacion
+            if (result.moveDown) // control de colision
+            this.pos.y = this.pos.y + this.velocity;// moverse
         }
         if (data['0']) { this.playMove = false; }
 
@@ -107,16 +124,16 @@ class Player implements IPlayer {
 
         if (this.game.zAxys) {
             // U
-            this.adjacentBlocks.up = this.game.zAxys.block.filter(this.filterToU(posY, posX, posXLast)) || []
+            this.adjacentBlocks.up = this.game.zAxys.block.filter(PlayerColisionTest.filterToU(posY, posX)) || []
             moveUp = this.adjacentBlocks.up.length === 0;
             // D
-            this.adjacentBlocks.down = this.game.zAxys.block.filter(this.filterToD(posY, posX, posXLast)) || []
+            this.adjacentBlocks.down = this.game.zAxys.block.filter(PlayerColisionTest.filterToD(posY, posX)) || []
             moveDown = this.adjacentBlocks.down.length === 0;
             // R
-            this.adjacentBlocks.right = this.game.zAxys.block.filter(this.filterToR(posX, posY, posYLast)) || []
+            this.adjacentBlocks.right = this.game.zAxys.block.filter(PlayerColisionTest.filterToR(posX, posY)) || []
             moveRight = this.adjacentBlocks.right.length === 0;
             // L
-            this.adjacentBlocks.left = this.game.zAxys.block.filter(this.filterToL(posX, posY, posYLast)) || []
+            this.adjacentBlocks.left = this.game.zAxys.block.filter(PlayerColisionTest.filterToL(posX, posY)) || []
             moveLeft = this.adjacentBlocks.left.length === 0;
 
             // LIMITS
@@ -126,46 +143,8 @@ class Player implements IPlayer {
             if (posYLast >= this.game.dim.y) { moveDown = false; }
         }
 
-
         // PROPS
         return { posX, posY, posXLast, posYLast, moveUp, moveDown, moveLeft, moveRight }
-    }
-
-
-    filterToR = (posX: number, posY: number, posYLast: number) => (b: Block) => {
-        return (
-            posX + 1 === b.pos.x &&
-            (
-                (b.pos.y <= posY && b.pos.y + 1 > posY) ||
-                (b.pos.y < posYLast && b.pos.y + 1 >= posYLast)
-            ));
-    }
-
-    filterToD = (posY: number, posX: number, posXLast: number) => (b: Block) => {
-        return (
-            posY + 1 === b.pos.y &&
-            (
-                (b.pos.x <= posX && b.pos.x + 1 > posX) ||
-                (b.pos.x < posXLast && b.pos.x + 1 >= posXLast)
-            ));
-    }
-
-    filterToL = (posX: number, posY: number, posYLast: number) => (b: Block) => {
-        return (
-            posX - 1 === b.pos.x &&
-            (
-                (b.pos.y <= posY && b.pos.y + 1 > posY) ||
-                (b.pos.y < posYLast && b.pos.y + 1 >= posYLast)
-            ));
-    }
-
-    filterToU = (posY: number, posX: number, posXLast: number) => (b: Block) => {
-        return (
-            posY - 1 === b.pos.y &&
-            (
-                (b.pos.x <= posX && b.pos.x + 1 > posX) ||
-                (b.pos.x < posXLast && b.pos.x + 1 >= posXLast)
-            ));
     }
 
     toFixed = (n: number) => Number.parseFloat(n.toFixed(2))
@@ -192,6 +171,11 @@ class Player implements IPlayer {
         }, this.fpsImagePass)
     }
 
+    /**
+     * Funcion que retorna las posiciones del grid observadas por el player
+     * para esto se evalua 'gazePosition' y que bloques estan en colision
+     */
+    getWatchedGrids() {}
     // ONLY DEBUG
     addInfo() {
         const e = document.getElementById('info')

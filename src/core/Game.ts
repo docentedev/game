@@ -10,7 +10,7 @@ export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     target: HTMLElement;
-    dim: Dim = { x: 20, y: 7 };
+    dim: Dim = { x: 10, y: 7 };
     blockSize: number = 50;
     fps: number = 20;
     zAxys: ZAxys;
