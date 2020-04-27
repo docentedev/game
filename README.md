@@ -1,5 +1,12 @@
 # Juego sencillo en Vanilla JS
 
+## TODOS
+
+- agregar items en capa items
+- agregar blockes de puerta
+- recoger items
+- agregar mochila
+
 ## v0.0.2 
 
 - Ahora el sprite del personaje esta bien animado
