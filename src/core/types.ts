@@ -56,3 +56,7 @@ export type ImageResource = {
 export type ImageResources = {
     [key: string]: ImageResource,
 }
+
+export type SpriteMap = {
+    [key: string]: Dim,
+}

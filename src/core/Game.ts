@@ -6,6 +6,7 @@ import blocks from './data/blocks';
 import images from './data/images';
 import Player from './Player';
 import Debug from './Debug';
+import items from './data/items';
 
 export class Game {
     canvas: HTMLCanvasElement;
@@ -111,8 +112,12 @@ export class Game {
         prop.forEach((p: BlockProp) => this.addBlock(p))
     }
 
-    addItem() {
-
+    addItem(prop: BlockProp) {
+        const block = new Block({ game: this, ...prop })
+        this.zAxys.item.push(block)
+    }
+    addItems(prop: BlockProp[]) {
+        prop.forEach((p: BlockProp) => this.addItem(p))
     }
 
     addNPC() {
@@ -180,8 +185,6 @@ export class Game {
         this.imageCount = this.imageCount + 1;
     }
 
-    private getSize = (d: number) => d * this.blockSize
-
     addImages(prop: ImageResourceData[]) {
         prop.forEach((p: ImageResourceData) => this.addImage(p.key, p.src))
     }
@@ -193,6 +196,7 @@ Game.init = (callback: Function) => document.addEventListener('DOMContentLoaded'
 Game.init(() => {
     const game = new Game('game');
     game.addBlocks(blocks);
+    game.addItems(items);
     game.addImages(images);
 });
 

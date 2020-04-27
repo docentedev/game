@@ -1,6 +1,7 @@
 import { Dim, Pos, BlockClassProp, IPlayer } from "./types";
 import { Game } from "./Game";
 import PlayerColisionTest from "./PlayerColisionTest";
+import Sprite from "./Sprite";
 
 class Player implements IPlayer {
 
@@ -19,7 +20,6 @@ class Player implements IPlayer {
 
     image: HTMLImageElement = new Image();
     imageId: string = 'grass';
-    size: any = { a: 0, b: 0, c: 31, d: 31 }
 
     // donde esta minrando el player
     gazeDirection : 'u' | 'd' | 'l' | 'r' | 'c' = 'd'
@@ -81,19 +81,16 @@ class Player implements IPlayer {
 
         if (data['38']) {
             this.gazeDirection = 'u'
-            this.size.b = this.imageTileSize * 2
             if (result.moveUp)
             this.pos.y = this.pos.y - this.velocity;
         }
         if (data['37']) {
             this.gazeDirection = 'l'
-            this.size.b = this.imageTileSize
             if(result.moveLeft)
             this.pos.x = this.pos.x - this.velocity
         }
         if (data['39']) {
             this.gazeDirection = 'r'
-            this.size.b = this.imageTileSize * 3
             if(result.moveRight)
             this.pos.x = this.pos.x + this.velocity
         }
@@ -101,7 +98,6 @@ class Player implements IPlayer {
         // paso
         if (data['40']) {
             this.gazeDirection = 'd' // direccion de mirada
-            this.size.b = 0 // asignacion de animacion
             if (result.moveDown) // control de colision
             this.pos.y = this.pos.y + this.velocity;// moverse
         }
@@ -141,30 +137,42 @@ class Player implements IPlayer {
         }
 
         // PROPS
-        return { posX, posY, posXLast, posYLast, moveUp, moveDown, moveLeft, moveRight }
+        return { moveUp, moveDown, moveLeft, moveRight }
     }
-
-    toFixed = (n: number) => Number.parseFloat(n.toFixed(2))
 
     drawImage() {
-        this.selectStepMove()
-        this.ctx.drawImage(this.image,
-            this.size.b, this.size.a,
-            this.imageTileSize, this.imageTileSize,
-            this.pos.x, this.pos.y,
-            this.blockSize, this.blockSize);
+        const s = new Sprite({
+            image: this.image,
+            map: {
+                u0: { x: 96, y: 0},
+                u1: { x: 96, y: 48},
+                u2: { x: 96, y: 96},
+                u3: { x: 96, y: 144},
+                d0: { x: 0, y: 0},
+                d1: { x: 0, y: 48},
+                d2: { x: 0, y: 96},
+                d3: { x: 0, y: 144},
+                l0: { x: 48, y: 0},
+                l1: { x: 48, y: 48},
+                l2: { x: 48, y: 96},
+                l3: { x: 48, y: 144},
+                r0: { x: 144, y: 0},
+                r1: { x: 144, y: 48},
+                r2: { x: 144, y: 96},
+                r3: { x: 144, y: 144},
+            },
+            ctx: this.ctx,
+            blockSize: this.blockSize,
+        })
+
+        s.drawImage(`${this.gazeDirection}${this.currentImgPass}`, this.pos.x, this.pos.y)
     }
 
-    selectStepMove() {
-        if (!this.playMove) return;
-        if (this.currentImgPass === 0) { this.size.a = 0 }
-        if (this.currentImgPass === 1) { this.size.a = this.imageTileSize }
-        if (this.currentImgPass === 2) { this.size.a = this.imageTileSize * 2 }
-        if (this.currentImgPass === 3) { this.size.a = this.imageTileSize }
-    }
     moveInterval() {
         setInterval(() => {
-            this.currentImgPass = this.currentImgPass === 3 ? 0 : this.currentImgPass + 1
+            if (this.playMove) {
+                this.currentImgPass = this.currentImgPass === 3 ? 0 : this.currentImgPass + 1
+            }
         }, this.fpsImagePass)
     }
 
