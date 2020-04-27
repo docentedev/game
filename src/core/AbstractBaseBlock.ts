@@ -10,6 +10,8 @@ abstract class AbstractBaseBlock {
     image: HTMLImageElement = new Image();
     imageId: string = 'grass';
     game: Game
+    type: string='block';
+    relativePlayerPos: 'u' | 'd' | 'r' | 'l' = 'd';
 
     constructor(props: BlockClassProp) {
         this.dim = props.dim || { x: 1, y: 1 };

@@ -1,6 +1,5 @@
 import { Dim, Pos, BlockClassProp, IPlayer } from "./types";
 import { Game } from "./Game";
-import Block from "./Block";
 import PlayerColisionTest from "./PlayerColisionTest";
 
 class Player implements IPlayer {
@@ -23,7 +22,7 @@ class Player implements IPlayer {
     size: any = { a: 0, b: 0, c: 31, d: 31 }
 
     // donde esta minrando el player
-    gazeDirection : 'u' | 'b' | 'l' | 'r' | 'c' = 'b'
+    gazeDirection : 'u' | 'd' | 'l' | 'r' | 'c' = 'd'
 
     // el paso de la imagen para animar
     currentImgPass: number = 0;
@@ -38,7 +37,9 @@ class Player implements IPlayer {
         left: [],
         right: [],
     }
-    text: any = {}
+
+    blocks: any = []
+    items: any = []
 
     constructor(props: BlockClassProp) {
         this.dim = props.dim || { x: 1, y: 1 };
@@ -57,18 +58,15 @@ class Player implements IPlayer {
         this.image = this.game.images[this.imageId].img;
         this.ctx.beginPath();
         this.drawImage();
-        this.game.debugMode && this.ctx.rect(this.pos.x, this.pos.y, this.game.blockSize, this.game.blockSize)
+        this.game.debug.getStatus() && this.ctx.rect(this.pos.x, this.pos.y, this.game.blockSize, this.game.blockSize)
         this.ctx.stroke();
-        this.addInfo()
 
-        this.text = {
+        this.game.debug.display ({
             ...this.pos, ...this.getCurrentBlocks(),
-            u: this.adjacentBlocks.up.map((b: Block) => b.pos),
-            d: this.adjacentBlocks.down.map((b: Block) => b.pos),
-            l: this.adjacentBlocks.left.map((b: Block) => b.pos),
-            r: this.adjacentBlocks.right.map((b: Block) => b.pos),
             gazeDirection: this.gazeDirection,
-        }
+            blocks: this.blocks,
+            items: this.items,
+        });
     }
 
     update() { this.create() }
@@ -102,7 +100,7 @@ class Player implements IPlayer {
 
         // paso
         if (data['40']) {
-            this.gazeDirection = 'b' // direccion de mirada
+            this.gazeDirection = 'd' // direccion de mirada
             this.size.b = 0 // asignacion de animacion
             if (result.moveDown) // control de colision
             this.pos.y = this.pos.y + this.velocity;// moverse
@@ -123,19 +121,17 @@ class Player implements IPlayer {
         let moveDown = true;
 
         if (this.game.zAxys) {
-            const block = this.game.zAxys.block;
+            const arrIsVoid = this.arrIsVoid;
+            this.blocks = PlayerColisionTest.info(this.game.zAxys.block, posY, posX);
+            this.items = PlayerColisionTest.info(this.game.zAxys.item, posY, posX);
             // U
-            this.adjacentBlocks.up = block.filter(PlayerColisionTest.filterToU(posY, posX)) || []
-            moveUp = this.adjacentBlocks.up.length === 0;
+            moveUp = arrIsVoid(this.blocks.u) && arrIsVoid(this.items.u)
             // D
-            this.adjacentBlocks.down = block.filter(PlayerColisionTest.filterToD(posY, posX)) || []
-            moveDown = this.adjacentBlocks.down.length === 0;
+            moveDown = arrIsVoid(this.blocks.d) && arrIsVoid(this.items.d)
             // R
-            this.adjacentBlocks.right = block.filter(PlayerColisionTest.filterToR(posX, posY)) || []
-            moveRight = this.adjacentBlocks.right.length === 0;
+            moveRight = arrIsVoid(this.blocks.r) && arrIsVoid(this.items.r)
             // L
-            this.adjacentBlocks.left = block.filter(PlayerColisionTest.filterToL(posX, posY)) || []
-            moveLeft = this.adjacentBlocks.left.length === 0;
+            moveLeft = arrIsVoid(this.blocks.l) && arrIsVoid(this.items.l)
 
             // LIMITS
             if ((posXLast >= this.game.dim.x)) { moveRight = false; }
@@ -177,13 +173,8 @@ class Player implements IPlayer {
      * para esto se evalua 'gazePosition' y que bloques estan en colision
      */
     getWatchedGrids() {}
-    // ONLY DEBUG
-    addInfo() {
-        const e = document.getElementById('info')
-        if (this.game.debugMode && e) {
-            e.innerHTML = JSON.stringify(this.text, undefined, 2)
-        }
-    }
+
+    arrIsVoid = (arr: any[]) : boolean => arr.length === 0
 }
 
 export default Player;

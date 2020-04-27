@@ -5,6 +5,7 @@ import Grid from './Grid';
 import blocks from './data/blocks';
 import images from './data/images';
 import Player from './Player';
+import Debug from './Debug';
 
 export class Game {
     canvas: HTMLCanvasElement;
@@ -18,8 +19,8 @@ export class Game {
     images: ImageResources = {};
     imageCount: number = 0;
 
-    debugMode : boolean = true;
-    
+    debug : Debug;
+
     static init: (callback: Function) => void;
 
     constructor(id: string) {
@@ -31,6 +32,9 @@ export class Game {
         this.canvas = document.createElement('canvas');
         this.ctx = this.getCtx();
         this.target = this.getTarget(id);
+
+        this.debug = new Debug();
+        this.debug.onDebug();
 
         this.zAxys = {
             grid: [],
