@@ -16,7 +16,7 @@
 
 - personaje: https://opengameart.org/content/alternate-lpc-character-sprites-george
 
-![game example](./doc/game_02.png)
+![game_v0.0.2.png](./doc/game_v0.0.2.png)
 
 ## v0.0.1
 ![game example](./doc/game.png)
