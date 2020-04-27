@@ -123,17 +123,18 @@ class Player implements IPlayer {
         let moveDown = true;
 
         if (this.game.zAxys) {
+            const block = this.game.zAxys.block;
             // U
-            this.adjacentBlocks.up = this.game.zAxys.block.filter(PlayerColisionTest.filterToU(posY, posX)) || []
+            this.adjacentBlocks.up = block.filter(PlayerColisionTest.filterToU(posY, posX)) || []
             moveUp = this.adjacentBlocks.up.length === 0;
             // D
-            this.adjacentBlocks.down = this.game.zAxys.block.filter(PlayerColisionTest.filterToD(posY, posX)) || []
+            this.adjacentBlocks.down = block.filter(PlayerColisionTest.filterToD(posY, posX)) || []
             moveDown = this.adjacentBlocks.down.length === 0;
             // R
-            this.adjacentBlocks.right = this.game.zAxys.block.filter(PlayerColisionTest.filterToR(posX, posY)) || []
+            this.adjacentBlocks.right = block.filter(PlayerColisionTest.filterToR(posX, posY)) || []
             moveRight = this.adjacentBlocks.right.length === 0;
             // L
-            this.adjacentBlocks.left = this.game.zAxys.block.filter(PlayerColisionTest.filterToL(posX, posY)) || []
+            this.adjacentBlocks.left = block.filter(PlayerColisionTest.filterToL(posX, posY)) || []
             moveLeft = this.adjacentBlocks.left.length === 0;
 
             // LIMITS

@@ -1,6 +1,4 @@
 export default [
-    //{ pos: { x: 0, y: 0 } },
-    //{ pos: { x: 0, y: 3 } },
     { pos: { x: 1, y: 2 } },
     { imageId: 'wall2', pos: { x: 1, y: 3 } },
     { imageId: 'wall2', pos: { x: 2, y: 0 } },
@@ -16,13 +14,5 @@ export default [
     { pos: { x: 9, y: 5 } },
     { pos: { x: 10, y: 4 } },
     { pos: { x: 10, y: 5 } },
-    { pos: { x: 11, y: 5 } },
-
-    { imageId: 'w-l', pos: { x: 14, y: 3 } },
-    { imageId: 'w-x', pos: { x: 15, y: 3 } },
-    { imageId: 'w-t', pos: { x: 16, y: 2 } },
-    { imageId: 'w-c', pos: { x: 16, y: 3 } },
-    { imageId: 'w-b', pos: { x: 16, y: 4 } },
-    { imageId: 'w-r', pos: { x: 17, y: 3 } },
-    
+    { pos: { x: 11, y: 5 } },  
 ];

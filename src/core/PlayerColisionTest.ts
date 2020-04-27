@@ -51,8 +51,14 @@ class PlayerColisionTest {
 
     // crea un subset para no buscar en todos los blockes
     // con esto se crea un alista ya filtrada
-    static getSubsetToColision() {
-        
+    static getSubsetToColision(blocks: Block[], posX: number, posY: number) : Block[] {
+        const b = blocks.filter((b: Block) => {
+            return evalU(b, posX, posY) || 
+            evalD(b, posX, posY) || 
+            evalL(b, posX, posY) || 
+            evalR(b, posX, posY);
+        });
+        return b
     }
 }
 
