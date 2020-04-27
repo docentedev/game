@@ -1,4 +1,4 @@
-# Juego sencillo en Vanilla JS
+# MOTOR de Juego 2D sencillo en Vanilla JS
 
 ## TODOS
 
