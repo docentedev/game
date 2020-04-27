@@ -8,7 +8,7 @@ abstract class AbstractBaseBlock {
     blockSize: number;
     ctx: CanvasRenderingContext2D;
     image: HTMLImageElement = new Image();
-    imageId: string = 'grass';
+    spriteId: string = 'grass';
     game: Game
     type: string='block';
     relativePlayerPos: 'u' | 'd' | 'r' | 'l' = 'd';

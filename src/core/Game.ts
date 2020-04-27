@@ -7,6 +7,13 @@ import images from './data/images';
 import Player from './Player';
 import Debug from './Debug';
 import items from './data/items';
+import sprites from './data/sprites';
+import Sprite, { SpriteResource } from './Sprite';
+
+
+type Sprites = {
+    [key: string]: Sprite,
+}
 
 export class Game {
     canvas: HTMLCanvasElement;
@@ -18,6 +25,12 @@ export class Game {
     zAxys: ZAxys;
     inputController: InputController;
     images: ImageResources = {};
+    spritesResources: SpriteResource[] = []
+
+
+    // Sprites contruct
+    sprites: Sprites = {}
+    
     imageCount: number = 0;
 
     debug : Debug;
@@ -149,6 +162,7 @@ export class Game {
 
     private createResourcesLoad() {
         this.gridGenerate()
+        this.createSprites();
         this.createCanvas();
 
         this.zAxys.grid.forEach((e: Grid) => e.create())
@@ -174,6 +188,18 @@ export class Game {
         }, this.fps);
     }
 
+    createSprites() {
+        this.spritesResources.forEach((e : SpriteResource) => {
+            this.sprites[e.key] = new Sprite({
+                imageTileSize: e.imageTileSize,
+                image: this.images[e.imageKey].img,
+                map: e.map,
+                game: this,
+                blockSize: this.blockSize,
+            })
+        })
+    }
+
     private addImage(key: string, src: string) {
         const img = new Image();
         //img.height = this.getSize(this.dim.y)
@@ -188,6 +214,10 @@ export class Game {
     addImages(prop: ImageResourceData[]) {
         prop.forEach((p: ImageResourceData) => this.addImage(p.key, p.src))
     }
+
+    addSprites(prop: SpriteResource[]) {
+        this.spritesResources = prop;
+    }
 }
 
 Game.init = (callback: Function) => document.addEventListener('DOMContentLoaded', (event) => callback(event), false);
@@ -198,6 +228,7 @@ Game.init(() => {
     game.addBlocks(blocks);
     game.addItems(items);
     game.addImages(images);
+    game.addSprites(sprites);
 });
 
 const start = () => { }

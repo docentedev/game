@@ -6,11 +6,11 @@ class Block extends AbstractBaseBlock {
     constructor(props: BlockClassProp) {
         super(props);
         this.bgColor = 'red';
-        this.imageId = props.imageId || 'wall'
+        this.spriteId = props.spriteId || 'wall'
     }
 
     create() {
-        this.image = this.game.images[this.imageId].img;
+        this.image = this.game.images[this.spriteId].img;
         this.ctx.beginPath();
         // this.ctx.fillStyle = this.bgColor;
         // this.ctx.fillRect(this.getPosY(), this.getPosY(), this.getDimX(), this.getDimY());

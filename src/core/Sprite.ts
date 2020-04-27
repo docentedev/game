@@ -1,28 +1,38 @@
 import { SpriteMap } from "./types";
+import { Game } from "./Game";
+
+export interface SpriteResource {
+    key: string,
+    imageTileSize: number,
+    imageKey: string,
+    map: SpriteMap,
+}
 
 interface SpriteProps {
-    ctx: CanvasRenderingContext2D,
+    game: Game
     image: HTMLImageElement,
     map: SpriteMap,
     blockSize: number,
+    imageTileSize: number,
 }
 
 class Sprite {
     image: HTMLImageElement;
     map: SpriteMap
-    ctx: CanvasRenderingContext2D
-    imageTileSize: number = 48
+    game: Game
+    imageTileSize: number
     blockSize: number;
 
-    constructor(props : SpriteProps) {
+    constructor(props: SpriteProps) {
         this.image = props.image
         this.map = props.map
-        this.ctx = props.ctx
+        this.game = props.game
+        this.imageTileSize = props.imageTileSize
         this.blockSize = props.blockSize
     }
 
-    drawImage(key: string, posX : number, posY: number) {
-        this.ctx.drawImage(this.image,
+    drawImage(key: string, posX: number, posY: number) {
+        this.game.ctx.drawImage(this.image,
             this.map[key].x, this.map[key].y,
             this.imageTileSize, this.imageTileSize,
             posX, posY,

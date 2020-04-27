@@ -5,11 +5,11 @@ class Grid extends AbstractBaseBlock {
     image: HTMLImageElement = new Image();
     constructor(props: BlockClassProp) {
         super(props);
-        this.imageId = props.imageId || 'grass'
+        this.spriteId = props.spriteId || 'grass'
     }
 
     create() {
-        this.image = this.game.images[this.imageId].img;
+        this.image = this.game.images[this.spriteId].img;
         this.ctx.fillStyle = this.bgColor;
         this.ctx.beginPath();
         //this.ctx.lineWidth = 1;

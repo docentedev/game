@@ -16,9 +16,7 @@ export type Pos = {
 export interface IPlayer {
     dim: Dim
     pos: Pos
-    ctx: CanvasRenderingContext2D
     game: Game
-    blockSize: number,
     velocity: number,
     create(): void,
     update(): void,
@@ -40,7 +38,7 @@ export type BlockProp = {
 }
 
 export type BlockClassProp = {
-    game: Game, dim?: Dim, pos: Pos, imageId?: string,
+    game: Game, dim?: Dim, pos: Pos, spriteId?: string,
 }
 
 export type ImageResourceData = {
