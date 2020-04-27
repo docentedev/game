@@ -9,7 +9,7 @@ class Player implements IPlayer {
     game: Game
     blockSize: number
 
-    velocity: number = 0.1
+    velocity: number = 1 / 10
     fpsImagePass: number = 100
 
     image: HTMLImageElement = new Image();
@@ -26,7 +26,13 @@ class Player implements IPlayer {
 
     playMove: boolean = false;
 
-    currentPosition : Dim = {x: 0, y: 0}
+    adjacentBlocks: any = {
+        up: [],
+        down: [],
+        left: [],
+        right: [],
+    }
+    text: any = {}
 
     constructor(props: BlockClassProp) {
         this.dim = props.dim || { x: 1, y: 1 };
@@ -35,14 +41,27 @@ class Player implements IPlayer {
         this.ctx = props.game.ctx
         this.blockSize = props.game.blockSize;
         this.imageId = props.imageId || 'tite-image'
+        this.velocity = this.velocity * this.blockSize;
+
+        this.getCurrentBlocks();
         this.moveInterval()
     }
 
     create() {
         this.image = this.game.images[this.imageId].img;
         this.ctx.beginPath();
-        this.drawImage();
+        // this.drawImage();
+        this.ctx.fillRect(this.pos.x, this.pos.y, this.game.blockSize, this.game.blockSize)
         this.ctx.stroke();
+        this.addInfo()
+
+        this.text = {
+            ...this.pos, ...this.getCurrentBlocks(),
+            u: this.adjacentBlocks.up.map((b: Block) => b.pos),
+            d: this.adjacentBlocks.down.map((b: Block) => b.pos),
+            l: this.adjacentBlocks.left.map((b: Block) => b.pos),
+            r: this.adjacentBlocks.right.map((b: Block) => b.pos),
+        }
     }
 
     update() { this.create() }
@@ -52,72 +71,82 @@ class Player implements IPlayer {
 
     inputControl(data: any) {
         if (!this.allowMove) return;
-
+        const result = this.getCurrentBlocks();
         this.playMove = true;
 
-        const dim = this.game.dim;
-        // console.log(blocks);
-
-        const x = Math.floor(this.pos.x)
-        // se agrega un uno, para que tome la 
-        // posicion de los pies del personaje
-        const y = Math.floor(this.pos.y)
-        //const cleanX = x < 0 ? 0 : x;
-        this.currentPosition = { x, y }
-
-        const blockSize = this.blockSize;
-        const calcXWithVelAdd = (this.pos.x * blockSize) + this.velocity
-        const calcYWithVelAdd = (this.pos.y * blockSize) + this.velocity
-        const calcXWithVelSub = (this.pos.x * blockSize) - this.velocity
-        const calcYWithVelSub = (this.pos.y * blockSize) - this.velocity
-        const calcXEnd = (dim.x * blockSize) - blockSize
-        const calcYEnd = (dim.y * blockSize) - blockSize
-
-        // UP
-        if (data['38']) {
+        if (data['38'] && result.moveUp) {
             this.size.b = this.elementSize * 3
-            const finalPos = calcYWithVelSub <= 0 ? this.pos.y : (this.pos.y - this.velocity);
-
-            if (!this.searchBlock('up')) {
-                this.pos.y = finalPos
-            }
+            this.pos.y = this.pos.y - this.velocity;
         }
-        // L
-        if (data['37']) {
+        if (data['37'] && result.moveLeft) {
             this.size.b = this.elementSize
-            this.pos.x = calcXWithVelSub <= 0 ? this.pos.x : (this.pos.x - this.velocity);
+            this.pos.x = this.pos.x - this.velocity
         }
-        // R
-        if (data['39']) {
+        if (data['39'] && result.moveRight) {
             this.size.b = this.elementSize * 2
-            this.pos.x = calcXWithVelAdd >= calcXEnd ? this.pos.x : (this.pos.x + this.velocity);
+            this.pos.x = this.pos.x + this.velocity
         }
-        // B
-        if (data['40']) {
+        if (data['40'] && result.moveDown) {
             this.size.b = 0
-            const finalPos = calcYWithVelAdd >= calcYEnd ? this.pos.y : (this.pos.y + this.velocity);
-        
-            if (!this.searchBlock('down')) {
-                this.pos.y = finalPos
-            }
+            this.pos.y = this.pos.y + this.velocity;
 
         }
         if (data['0']) { this.playMove = false; }
 
     }
 
-    searchBlock = (p: string) => {
-        return this.game.zAxys.block.find((b: Block) => {
-            if (p === 'up') {
-                return (b.pos.x === this.currentPosition.x &&
-                    b.pos.y === this.currentPosition.y)
-            }
-            if (p === 'down') {
-                return (b.pos.x === this.currentPosition.x &&
-                    b.pos.y === this.currentPosition.y + 1)
-            }
-        })
+    getCurrentBlocks = () => {
+        const posX = this.pos.x / this.game.blockSize
+        const posY = this.pos.y / this.game.blockSize
+        const posXLast = (this.pos.x + this.game.blockSize) / this.game.blockSize
+        const posYLast = (this.pos.y + this.game.blockSize) / this.game.blockSize
+
+        let moveRight = true;
+        let moveLeft = true;
+        let moveUp = true;
+        let moveDown = true;
+
+        if (this.game.zAxys) {
+
+            // eval if is posible move to moveRight
+            this.adjacentBlocks.right = this.game.zAxys.block.filter(this.filterToR(posX, posY, posYLast)) || []
+            moveRight = this.adjacentBlocks.right.length === 0;
+
+            this.adjacentBlocks.left = this.game.zAxys.block.filter(this.filterToL(posX, posY, posYLast)) || []
+            moveLeft = this.adjacentBlocks.left.length === 0;
+
+            // LIMITS
+            if ((posXLast >= this.game.dim.x)) { moveRight = false; }
+            if (posX <= 0) { moveLeft = false; }
+            if (posY <= 0) { moveUp = false; }
+            if (posYLast >= this.game.dim.y) { moveDown = false; }
+        }
+
+
+        // PROPS
+        return { posX, posY, posXLast, posYLast, moveUp, moveDown, moveLeft, moveRight }
     }
+
+
+    filterToR = (posX: number, posY: number, posYLast: number) => (b: Block) => {
+        return (
+            posX + 1 === b.pos.x &&
+            (
+                (b.pos.y <= posY && b.pos.y + 1 > posY) ||
+                (b.pos.y < posYLast && b.pos.y + 1 >= posYLast)
+            ));
+    }
+
+    filterToL = (posX: number, posY: number, posYLast: number) => (b: Block) => {
+        return (
+            posX - 1 === b.pos.x &&
+            (
+                (b.pos.y <= posY && b.pos.y + 1 > posY) ||
+                (b.pos.y < posYLast && b.pos.y + 1 >= posYLast)
+            ));
+    }
+
+    toFixed = (n: number) => Number.parseFloat(n.toFixed(2))
 
     drawImage() {
         this.size.d = this.image.height / this.elements.y
@@ -146,6 +175,13 @@ class Player implements IPlayer {
         setInterval(() => {
             this.currentImgPass = this.currentImgPass === 3 ? 0 : this.currentImgPass + 1
         }, this.fpsImagePass)
+    }
+
+    addInfo() {
+        const e = document.getElementById('info')
+        if (e) {
+            e.innerHTML = JSON.stringify(this.text, undefined, 2)
+        }
     }
 }
 

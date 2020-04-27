@@ -10,8 +10,8 @@ export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     target: HTMLElement;
-    dim: Dim = { x: 10, y: 15 };
-    blockSize: number = 38;
+    dim: Dim = { x: 8, y: 8 };
+    blockSize: number = 40;
     fps: number = 20;
     zAxys: ZAxys;
     inputController: InputController;
@@ -35,7 +35,7 @@ export class Game {
             player: new Player({
                 game: this,
                 dim: { x: 1, y: 1 },
-                pos: { x: 0, y: 2 },
+                pos: { x: 0, y: 0 },
             }),
             block: [],
             item: [],
