@@ -10,7 +10,7 @@ class Player implements IPlayer {
     blockSize: number
 
     velocity: number = 1 / 10
-    fpsImagePass: number = 100
+    fpsImagePass: number = 200
 
     image: HTMLImageElement = new Image();
     imageId: string = 'grass';
@@ -19,8 +19,7 @@ class Player implements IPlayer {
     currentImgPass: number = 0;
     currentMov: number = 0;
 
-    elements: Dim = { x: 3, y: 4 }
-    elementSize: number = 31
+    imageTileSize: number = 48
 
     allowMove: boolean = true
 
@@ -40,7 +39,7 @@ class Player implements IPlayer {
         this.game = props.game;
         this.ctx = props.game.ctx
         this.blockSize = props.game.blockSize;
-        this.imageId = props.imageId || 'tite-image'
+        this.imageId = props.imageId || 'player_01'
         this.velocity = this.velocity * this.blockSize;
 
         this.getCurrentBlocks();
@@ -50,8 +49,8 @@ class Player implements IPlayer {
     create() {
         this.image = this.game.images[this.imageId].img;
         this.ctx.beginPath();
-        // this.drawImage();
-        this.ctx.fillRect(this.pos.x, this.pos.y, this.game.blockSize, this.game.blockSize)
+        this.drawImage();
+        this.game.debugMode && this.ctx.rect(this.pos.x, this.pos.y, this.game.blockSize, this.game.blockSize)
         this.ctx.stroke();
         this.addInfo()
 
@@ -75,15 +74,15 @@ class Player implements IPlayer {
         this.playMove = true;
 
         if (data['38'] && result.moveUp) {
-            this.size.b = this.elementSize * 3
+            this.size.b = this.imageTileSize * 2
             this.pos.y = this.pos.y - this.velocity;
         }
         if (data['37'] && result.moveLeft) {
-            this.size.b = this.elementSize
+            this.size.b = this.imageTileSize
             this.pos.x = this.pos.x - this.velocity
         }
         if (data['39'] && result.moveRight) {
-            this.size.b = this.elementSize * 2
+            this.size.b = this.imageTileSize * 3
             this.pos.x = this.pos.x + this.velocity
         }
         if (data['40'] && result.moveDown) {
@@ -107,11 +106,16 @@ class Player implements IPlayer {
         let moveDown = true;
 
         if (this.game.zAxys) {
-
-            // eval if is posible move to moveRight
+            // U
+            this.adjacentBlocks.up = this.game.zAxys.block.filter(this.filterToU(posY, posX, posXLast)) || []
+            moveUp = this.adjacentBlocks.up.length === 0;
+            // D
+            this.adjacentBlocks.down = this.game.zAxys.block.filter(this.filterToD(posY, posX, posXLast)) || []
+            moveDown = this.adjacentBlocks.down.length === 0;
+            // R
             this.adjacentBlocks.right = this.game.zAxys.block.filter(this.filterToR(posX, posY, posYLast)) || []
             moveRight = this.adjacentBlocks.right.length === 0;
-
+            // L
             this.adjacentBlocks.left = this.game.zAxys.block.filter(this.filterToL(posX, posY, posYLast)) || []
             moveLeft = this.adjacentBlocks.left.length === 0;
 
@@ -137,6 +141,15 @@ class Player implements IPlayer {
             ));
     }
 
+    filterToD = (posY: number, posX: number, posXLast: number) => (b: Block) => {
+        return (
+            posY + 1 === b.pos.y &&
+            (
+                (b.pos.x <= posX && b.pos.x + 1 > posX) ||
+                (b.pos.x < posXLast && b.pos.x + 1 >= posXLast)
+            ));
+    }
+
     filterToL = (posX: number, posY: number, posYLast: number) => (b: Block) => {
         return (
             posX - 1 === b.pos.x &&
@@ -146,30 +159,32 @@ class Player implements IPlayer {
             ));
     }
 
+    filterToU = (posY: number, posX: number, posXLast: number) => (b: Block) => {
+        return (
+            posY - 1 === b.pos.y &&
+            (
+                (b.pos.x <= posX && b.pos.x + 1 > posX) ||
+                (b.pos.x < posXLast && b.pos.x + 1 >= posXLast)
+            ));
+    }
+
     toFixed = (n: number) => Number.parseFloat(n.toFixed(2))
 
     drawImage() {
-        this.size.d = this.image.height / this.elements.y
-        this.size.c = this.image.width / this.elements.x
-
         this.selectStepMove()
         this.ctx.drawImage(this.image,
-            this.size.a,
-            this.size.b,
-            this.size.c,
-            this.size.d,
-            (this.pos.x * this.blockSize),
-            (this.pos.y * this.blockSize),
-            this.blockSize,
-            this.blockSize);
+            this.size.b, this.size.a,
+            this.imageTileSize, this.imageTileSize,
+            this.pos.x, this.pos.y,
+            this.blockSize, this.blockSize);
     }
 
     selectStepMove() {
         if (!this.playMove) return;
         if (this.currentImgPass === 0) { this.size.a = 0 }
-        if (this.currentImgPass === 1) { this.size.a = this.elementSize }
-        if (this.currentImgPass === 2) { this.size.a = this.elementSize * 2 }
-        if (this.currentImgPass === 3) { this.size.a = this.elementSize }
+        if (this.currentImgPass === 1) { this.size.a = this.imageTileSize }
+        if (this.currentImgPass === 2) { this.size.a = this.imageTileSize * 2 }
+        if (this.currentImgPass === 3) { this.size.a = this.imageTileSize }
     }
     moveInterval() {
         setInterval(() => {
@@ -177,9 +192,10 @@ class Player implements IPlayer {
         }, this.fpsImagePass)
     }
 
+    // ONLY DEBUG
     addInfo() {
         const e = document.getElementById('info')
-        if (e) {
+        if (this.game.debugMode && e) {
             e.innerHTML = JSON.stringify(this.text, undefined, 2)
         }
     }

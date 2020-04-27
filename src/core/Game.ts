@@ -10,13 +10,16 @@ export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     target: HTMLElement;
-    dim: Dim = { x: 8, y: 8 };
-    blockSize: number = 40;
+    dim: Dim = { x: 20, y: 7 };
+    blockSize: number = 50;
     fps: number = 20;
     zAxys: ZAxys;
     inputController: InputController;
     images: ImageResources = {};
     imageCount: number = 0;
+
+    debugMode : boolean = true;
+    
     static init: (callback: Function) => void;
 
     constructor(id: string) {
