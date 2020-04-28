@@ -17,6 +17,8 @@
 ![game_v0.0.3.png](./doc/game_v0.0.3.png)
 
 - Primera version de menu
+
+
 ![menu_v0.0.1.png](./doc/menu_v0.0.1.png)
 
 ## v0.0.2 
