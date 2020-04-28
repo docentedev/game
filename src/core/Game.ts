@@ -48,7 +48,7 @@ export class Game {
         this.target = this.getTarget(id);
 
         this.debug = new Debug();
-        this.debug.onDebug();
+        this.debug.offDebug();
 
         this.zAxys = {
             grid: [],
@@ -176,7 +176,8 @@ export class Game {
     }
 
     private update() {
-        setInterval(() => {
+        const cb = () => {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.zAxys.grid.forEach((e: Grid) => e.create())
             this.zAxys.grown.forEach((e: Block) => e.create())
             this.zAxys.block.forEach((e: Block) => e.create())
@@ -184,8 +185,9 @@ export class Game {
             this.zAxys.NPC.forEach((e: Block) => e.create())
             this.zAxys.msg.forEach((e: Block) => e.create())
             this.zAxys.player.update()
-
-        }, this.fps);
+            window.requestAnimationFrame(cb);
+        }
+        window.requestAnimationFrame(cb);
     }
 
     createSprites() {

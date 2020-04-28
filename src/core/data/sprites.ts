@@ -23,6 +23,19 @@ const sprites: SpriteResource[] = [
             r2: { x: 144, y: 96 },
             r3: { x: 144, y: 144 },
         },
+    },
+    {
+        key: 'grassSprite',
+        imageTileSize: 32,
+        imageKey: 'grass_sprite' ,
+        map: {
+            muroLadrilloQuebrado: { x: 0, y: 224 },
+            muroLadrillo: { x: 32, y: 224 },
+            muroLadrilloSemiPiedra: { x: 64, y: 224 },
+            grassClaro: { x: 321, y: 608 },
+            grassPiedra: { x: 351, y: 608 },
+            grass: { x: 256, y: 800 },
+        },
     }
 ];
 

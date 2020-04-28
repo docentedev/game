@@ -95,7 +95,6 @@ class Player implements IPlayer {
         let moveDown = true;
 
         if (this.game.zAxys) {
-            debugger
             const arrIsVoid = this.arrIsVoid;
             this.blocks = PlayerColisionTest.info(this.game.zAxys.block, posY, posX);
             this.items = PlayerColisionTest.info(this.game.zAxys.item, posY, posX);
