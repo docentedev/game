@@ -1,6 +1,10 @@
 import { SpriteMap } from "./types";
 import { Game } from "./Game";
 
+export type Sprites = {
+    [key: string]: Sprite,
+}
+
 export interface SpriteResource {
     key: string,
     imageTileSize: number,

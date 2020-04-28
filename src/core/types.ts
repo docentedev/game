@@ -21,6 +21,8 @@ export interface IPlayer {
     create(): void,
     update(): void,
     inputControl(data: any): void,
+    items: any,
+    gazeDirection: 'u' | 'd' | 'l' | 'r' | 'c'
 }
 
 export type ZAxys = {
@@ -34,11 +36,15 @@ export type ZAxys = {
 }
 
 export type BlockProp = {
-    dim?: Dim, pos: Pos
+    dim?: Dim, pos: Pos, type?: string,
 }
 
 export type BlockClassProp = {
-    game: Game, dim?: Dim, pos: Pos, spriteId?: string,
+    game: Game, pos: Pos, spriteKey?: string, tileKey?: string, type?: string,
+}
+
+export type ItemClassProp = {
+    game: Game, pos: Pos, spriteKey?: string, tileKey?: string,
 }
 
 export type ImageResourceData = {

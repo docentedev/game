@@ -1,9 +1,9 @@
-import { BlockClassProp } from "./types";
+import { ItemClassProp } from "./types";
 import AbstractBaseBlock from "./AbstractBaseBlock";
 
-class Block extends AbstractBaseBlock {
+class Item extends AbstractBaseBlock {
     tileKey : string
-    constructor(props: BlockClassProp) {
+    constructor(props: ItemClassProp) {
         super(props);
         this.spriteKey = props.spriteKey || 'sprites'
         this.tileKey = props.tileKey || 'ladrilloBlock'
@@ -16,4 +16,4 @@ class Block extends AbstractBaseBlock {
     }
 }
 
-export default Block;
+export default Item;

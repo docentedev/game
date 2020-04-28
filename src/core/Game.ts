@@ -8,40 +8,37 @@ import Player from './Player';
 import Debug from './Debug';
 import items from './data/items';
 import sprites from './data/sprites';
-import Sprite, { SpriteResource } from './Sprite';
-
-
-type Sprites = {
-    [key: string]: Sprite,
-}
+import Sprite, { SpriteResource, Sprites } from './Sprite';
+import Bag from './Bag';
 
 export class Game {
+    private target: HTMLElement;
+    private spritesResources: SpriteResource[] = []
+    private imageCount: number = 0;
+
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    target: HTMLElement;
-    dim: Dim = { x: 10, y: 7 };
-    blockSize: number = 50;
-    fps: number = 20;
+    dim: Dim = { x: 14, y: 20 };
+
+    // Propiedades compartidas
+    blockSize: number = 40;
     zAxys: ZAxys;
     inputController: InputController;
     images: ImageResources = {};
-    spritesResources: SpriteResource[] = []
-
-
-    // Sprites contruct
     sprites: Sprites = {}
-    
-    imageCount: number = 0;
 
-    debug : Debug;
+
+    debug: Debug;
 
     static init: (callback: Function) => void;
+
+    bag : Bag;
 
     constructor(id: string) {
 
         document.body.style.backgroundColor = 'black'
         document.body.style.margin = '0'
-        document.body.style.padding ='0'
+        document.body.style.padding = '0'
 
         this.canvas = document.createElement('canvas');
         this.ctx = this.getCtx();
@@ -53,16 +50,17 @@ export class Game {
         this.zAxys = {
             grid: [],
             grown: [],
-            player: new Player({
-                game: this,
-                dim: { x: 1, y: 1 },
-                pos: { x: 0, y: 0 },
-            }),
+            player: new Player({ game: this, pos: { x: 1, y: 0 } }),
             block: [],
             item: [],
             NPC: [],
             msg: [],
         }
+
+        this.bag = new Bag({
+            game: this,
+            player: this.zAxys.player
+        });
 
         this.inputController = new InputController(this.inputControllerCallback);
         this.create();
@@ -104,7 +102,7 @@ export class Game {
         const game = this;
         for (let i = 0; i < this.dim.x; i++) {
             for (let j = 0; j < this.dim.y; j++) {
-                this.addGrid(new Grid({ game, dim: { x: 1, y: 1 }, pos: { x: i, y: j } }));
+                this.addGrid(new Grid({ game, pos: { x: i, y: j } }));
             }
         }
     }
@@ -165,13 +163,6 @@ export class Game {
         this.createSprites();
         this.createCanvas();
 
-        this.zAxys.grid.forEach((e: Grid) => e.create())
-        this.zAxys.grown.forEach((e: Block) => e.create())
-        this.zAxys.block.forEach((e: Block) => e.create())
-        this.zAxys.item.forEach((e: Block) => e.create())
-        this.zAxys.NPC.forEach((e: Block) => e.create())
-        this.zAxys.msg.forEach((e: Block) => e.create())
-        this.zAxys.player.create()
         this.update();
     }
 
@@ -184,14 +175,17 @@ export class Game {
             this.zAxys.item.forEach((e: Block) => e.create())
             this.zAxys.NPC.forEach((e: Block) => e.create())
             this.zAxys.msg.forEach((e: Block) => e.create())
+
             this.zAxys.player.update()
+            this.bag.drawBag()
+            
             window.requestAnimationFrame(cb);
         }
         window.requestAnimationFrame(cb);
     }
 
     createSprites() {
-        this.spritesResources.forEach((e : SpriteResource) => {
+        this.spritesResources.forEach((e: SpriteResource) => {
             this.sprites[e.key] = new Sprite({
                 imageTileSize: e.imageTileSize,
                 image: this.images[e.imageKey].img,

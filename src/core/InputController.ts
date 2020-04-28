@@ -20,9 +20,10 @@ class InputController {
             40: false, // D
             32: false, // space
             0: true, // 0 is static
+            77: false, // KEY m, open menu
         };
     }
-
+    
     initListener() {
         document.body.addEventListener("keydown", (e) => {
             this.keys[e.keyCode] = true;

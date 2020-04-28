@@ -2,16 +2,16 @@ import { BlockClassProp } from "./types";
 import AbstractBaseBlock from "./AbstractBaseBlock";
 
 class Grid extends AbstractBaseBlock {
+    tileKey : string
     constructor(props: BlockClassProp) {
         super(props);
-        this.spriteId = props.spriteId || 'grassSprite'
+        this.spriteKey = props.spriteKey || 'sprites'
+        this.tileKey = 'grass'
     }
 
     create() {
-        this.ctx.fillStyle = this.bgColor;
-        this.ctx.beginPath();
         this.drawDebug()
-        this.game.sprites[this.spriteId].drawImage('grass', this.getPosX(), this.getPosY())
+        this.game.sprites[this.spriteKey].drawImage(this.tileKey, this.getPosX(), this.getPosY())
         this.ctx.stroke();
     }
 

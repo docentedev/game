@@ -52,7 +52,7 @@ class PlayerColisionTest {
     // crea un subset para no buscar en todos los blockes
     // con esto se crea un alista ya filtrada
     static info(blocks: AbstractBaseBlock[], posY: number, posX: number): any {
-        const o = blocks.map((b: AbstractBaseBlock) => ({ pos: b.pos, type: b.type }))
+        const o = blocks.map((b: AbstractBaseBlock) => ({ pos: b.pos, type: b.type, tileKey: b.tileKey }))
         const filterSubset = o.filter((b: any) => {
             return evalL(b, posX, posY) || evalR(b, posX, posY) || evalU(b, posX, posY) || evalD(b, posX, posY)
         });

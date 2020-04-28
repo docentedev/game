@@ -10,7 +10,7 @@ class Player implements IPlayer {
     velocity: number = 1 / 10
     fpsImagePass: number = 200
 
-    spriteId: string = '';
+    spriteKey: string = '';
 
     // donde esta minrando el player
     gazeDirection: 'u' | 'd' | 'l' | 'r' | 'c' = 'd'
@@ -25,11 +25,13 @@ class Player implements IPlayer {
     items: any = []
 
     constructor(props: BlockClassProp) {
-        this.dim = props.dim || { x: 1, y: 1 };
-        this.pos = props.pos || { x: 0, y: 0 };
+        this.dim = { x: 1, y: 1 };
+        this.pos = {
+            x: (props.pos.x || 0) * props.game.blockSize,
+            y: (props.pos.y || 0)  * props.game.blockSize};
         this.game = props.game;
         this.game.blockSize = props.game.blockSize;
-        this.spriteId = props.spriteId || 'player01'
+        this.spriteKey = props.spriteKey || 'player01'
         this.velocity = this.velocity * this.game.blockSize
 
         this.getCurrentBlocks();
@@ -53,21 +55,31 @@ class Player implements IPlayer {
     update() { this.create() }
 
     inputControl(data: any) {
-        if (!this.allowMove) return;
         const result = this.getCurrentBlocks();
-        this.playMove = true;
+        
+
+        // 77 open Menu
+        if (data['77']) {
+            this.game.bag.toggleMenu()
+            this.allowMove = !this.allowMove
+        }
+
+        if (!this.allowMove) return;
 
         if (data['38']) {
+            this.playMove = true;
             this.gazeDirection = 'u'
             if (result.moveUp)
                 this.pos.y = this.pos.y - this.velocity;
         }
         if (data['37']) {
+            this.playMove = true;
             this.gazeDirection = 'l'
             if (result.moveLeft)
                 this.pos.x = this.pos.x - this.velocity
         }
         if (data['39']) {
+            this.playMove = true;
             this.gazeDirection = 'r'
             if (result.moveRight)
                 this.pos.x = this.pos.x + this.velocity
@@ -75,6 +87,7 @@ class Player implements IPlayer {
 
         // paso
         if (data['40']) {
+            this.playMove = true;
             this.gazeDirection = 'd' // direccion de mirada
             if (result.moveDown) // control de colision
                 this.pos.y = this.pos.y + this.velocity;// moverse
@@ -119,7 +132,7 @@ class Player implements IPlayer {
     }
 
     drawImage() {
-        this.game.sprites[this.spriteId]
+        this.game.sprites[this.spriteKey]
             .drawImage(`${this.gazeDirection}${this.currentImgPass}`,
                 this.pos.x,
                 this.pos.y)
