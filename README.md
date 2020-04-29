@@ -2,7 +2,7 @@
 
 ## TODOS
 
-- agregar blockes de puerta en items
+- agregar bloques de puerta en items
 - agregar acciones contextuales segun item
 - recoger items
 - agregar mochila con acciones
@@ -13,7 +13,7 @@
 ## v0.0.4
 
 - Motor de colisiones HitBox
-- permite blockes de diferentes medidas
+- permite bloques de diferentes medidas
 
 - se quito capa de items, requiere refactorizacion
 - se quito mochila requiere refactor
