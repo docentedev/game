@@ -6,6 +6,21 @@
 - agregar acciones contextuales segun item
 - recoger items
 - agregar mochila con acciones
+- se quito capa de items, requiere refactorizacion
+- se quito mochila requiere refactor
+- se quito modo debug, requiere refactor
+
+## v0.0.4
+
+- Motor de colisiones HitBox
+- permite blockes de diferentes medidas
+
+- se quito capa de items, requiere refactorizacion
+- se quito mochila requiere refactor
+- se quito modo debug, requiere refactor
+- se rehizo por completo Colisiones
+
+![game_v0.0.4.png](./doc/game_v0.0.4.png)
 
 ## v0.0.3
 - agregado items en capa items

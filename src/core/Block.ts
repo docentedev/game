@@ -1,19 +1,23 @@
-import { BlockClassProp } from "./types";
-import AbstractBaseBlock from "./AbstractBaseBlock";
+import AbstractBlock from "./AbstractBlock";
+import { Pos } from "./Sprite";
 
-class Block extends AbstractBaseBlock {
-    tileKey : string
-    constructor(props: BlockClassProp) {
-        super(props);
-        this.spriteKey = props.spriteKey || 'sprites'
-        this.tileKey = props.tileKey || 'ladrilloBlock'
-    }
+class Block extends AbstractBlock{
+    draw(): void {
+        //this.getContext().fillStyle = 'red'
+        //this.getContext().fillRect(this.x,this.y, this.h, this.w)
 
-    create() {
-        this.ctx.beginPath();
-        this.game.sprites[this.spriteKey].drawImage(this.tileKey, this.getPosX(), this.getPosY())
-        this.ctx.stroke();
+        const k = this.spriteTitle
+        const pos : Pos = this.sprite.map[k]
+        this.sprite.x = pos.x
+        this.sprite.y = pos.y
+        this.sprite.blockSize = this.w
+        this.sprite.blockSizeY = this.h
+        this.sprite.size = pos.w || this.w
+        this.sprite.sizeY = pos.h || this.h
+        this.sprite.drawImage(
+            this.x,
+            this.y)
     }
 }
 
-export default Block;
+export default Block

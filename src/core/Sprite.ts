@@ -1,46 +1,66 @@
-import { SpriteMap } from "./types";
-import { Game } from "./Game";
-
 export type Sprites = {
     [key: string]: Sprite,
 }
 
-export interface SpriteResource {
-    key: string,
-    imageTileSize: number,
-    imageKey: string,
-    map: SpriteMap,
+export type SpriteObj = {
+    [key: string]: Sprite,
+}
+
+export type Pos = {
+    x: number,
+    y: number,
+    w?: number,
+    h?: number
+}
+export type SpriteMap = {
+    [key: string]: Pos,
 }
 
 interface SpriteProps {
-    game: Game
     image: HTMLImageElement,
-    map: SpriteMap,
+    size: number,
+    sizeY?: number
+    x: number,
+    y: number,
     blockSize: number,
-    imageTileSize: number,
+    blockSizeY?: number,
+    map: SpriteMap,
 }
 
 class Sprite {
     image: HTMLImageElement;
+    ctx: CanvasRenderingContext2D | null = null
+    size: number
+    sizeY: number | undefined
+    x: number
+    y: number
+    blockSize: number = 1
+    blockSizeY: number | undefined
     map: SpriteMap
-    game: Game
-    imageTileSize: number
-    blockSize: number;
 
     constructor(props: SpriteProps) {
         this.image = props.image
-        this.map = props.map
-        this.game = props.game
-        this.imageTileSize = props.imageTileSize
+        this.size = props.size
+        this.sizeY = props.sizeY || props.size
+        this.x = props.x
+        this.y = props.y
         this.blockSize = props.blockSize
+        this.blockSizeY = props.blockSizeY || props.blockSize
+        this.map = props.map
     }
 
-    drawImage(key: string, posX: number, posY: number) {
-        this.game.ctx.drawImage(this.image,
-            this.map[key].x, this.map[key].y,
-            this.imageTileSize, this.imageTileSize,
+    drawImage(posX: number, posY: number) {
+        this.getContext().drawImage(this.image,
+            this.x, this.y,
+            this.size, this.sizeY || this.size,
             posX, posY,
-            this.blockSize, this.blockSize);
+            this.blockSize, this.blockSizeY || this.blockSize);
+    }
+
+    setContext = (ctx: CanvasRenderingContext2D) => this.ctx = ctx
+    getContext(): CanvasRenderingContext2D {
+        if (this.ctx) return this.ctx;
+        throw new Error("getContextError")
     }
 }
 
