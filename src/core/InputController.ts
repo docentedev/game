@@ -1,4 +1,4 @@
-enum EnumMovePosition {
+export enum EnumMovePosition {
     LEFT = 'LEFT', // L
     UP = 'UP', // U
     RIGHT = 'RIGHT', // R

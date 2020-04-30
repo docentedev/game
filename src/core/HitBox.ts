@@ -1,6 +1,6 @@
 import Player from "./Player";
 import AbstractBlock from "./AbstractBlock";
-import { Keys } from "./InputController";
+import { Keys, EnumMovePosition } from "./InputController";
 
 /*
 HitBox Collision Box Axys
@@ -11,113 +11,209 @@ x,y ------ xe,y
 x,ye------ xe,ye 
 */
 class HitBox {
+    lastPosition: string = 'DOWN';
     finded: any[] = []
+    items: any = {
+        [EnumMovePosition.DOWN]: [],
+    }
 
-    detected(originalBlocks: AbstractBlock[], direction: Keys, player: Player) {
-        const blocks = originalBlocks
-            .map((b: AbstractBlock): AbstractBlock => {
-                b.offCollision()
-                return b;
-            })
+    detected(originalBlocks: AbstractBlock[], direction: Keys, player: Player, callbackOpenMenu: Function) {
+
+        const solidBlocks: AbstractBlock[] = originalBlocks.filter((b: AbstractBlock): boolean => {
+            return b.visible;
+        })
+
+        // dejamos off todos los bloques colisionados
+        const blocks = solidBlocks.map((b: AbstractBlock): AbstractBlock => {
+            b.offCollision()
+            return b;
+        })
+
+
 
         const unitMov = player.getVelocity()
         if (direction.DOWN) {
             const toY = player.y + unitMov
             const toYE = toY + player.h
-            const xe = player.x + player.w
-            const x = player.x
-            this.finded = blocks.filter((b: AbstractBlock) => {
-                const bye = b.y + b.h
-                const bx = b.x
-                const by = b.y
-                const bxe = b.x + b.w
-                const yIntersect = bye > toYE && by < toYE
-                const xIntersect = x > bx && x < bxe
-                const xeIntersect = xe < bxe && xe > bx
-                const blockInPlayer = x <= bx && xe >= bxe
-                return (yIntersect && (xIntersect || xeIntersect || blockInPlayer))
-            });
-            
-            if (this.finded.length === 0 && toYE <= player.getHCanvas()) {
-                player.y = toY
-            }
+            this.finded = blocks.filter(this.filterDOWN(toYE, player.x, (player.x + player.w)));
+            if (this.finded.length === 0 && toYE <= player.getHCanvas()) { player.y = toY }
+
+            this.lastPosition = EnumMovePosition.DOWN
         }
         if (direction.UP) {
             const toY = player.y - unitMov;
-            const xe = player.x + player.w
-            const x = player.x
-            this.finded = blocks.filter((b: AbstractBlock) => {
-                const bye = b.y + b.h
-                const bx = b.x
-                const by = b.y
-                const bxe = b.x + b.w
-                const yIntersect = bye > toY && by < toY
-                const xIntersect = x > bx && x < bxe
-                const xeIntersect = xe < bxe && xe > bx
-                const blockInPlayer = x <= bx && xe >= bxe
-                return (yIntersect && (xIntersect || xeIntersect || blockInPlayer))
-            });
+            this.finded = blocks.filter(this.filterUP(toY, player.x, (player.x + player.w)));
+            if (this.finded.length === 0 && toY >= 0) { player.y = toY }
 
-            if (this.finded.length === 0 && toY >= 0) {
-                player.y = toY
-            }
+            this.lastPosition = EnumMovePosition.UP
         }
         if (direction.LEFT) {
-            //console.log(dimPos, blocks, direction);
             const toX = player.x - unitMov;
-            const ye = player.y + player.h
-            const y = player.y
             // buscamos colisiones
-            this.finded = blocks.filter((b: AbstractBlock) => {
-                const bxe = b.x + b.w
-                const bx = b.x
-                const by = b.y
-                const bye = b.y + b.h
-
-                // comprobacion player eje X intersecta con bloque en eje X
-                const xIntersect = bxe > toX && bx < toX
-                // comprobacion player eje Y estas dentro de un bloque
-                const yIntersect = y > by && y < bye
-                // comprobacion player eje Y Inferior estas dentro de un bloque
-                const yeIntersect = ye < bye && ye > by
-                // comprobacion bloque esta dentro del player en eje Y
-                const blockInPlayer = y <= by && ye >= bye
-
-                return (xIntersect && (yIntersect || yeIntersect || blockInPlayer))
-            });
-
+            this.finded = blocks.filter(this.filterLEFT(toX, player.y, (player.y + player.h)));
             // solo si no intersecto con bloques y aun esta dentro de limite X de Grid
-            if (this.finded.length === 0 && toX >= 0) {
-                player.x = toX
-            }
+            if (this.finded.length === 0 && toX >= 0) { player.x = toX }
+
+            this.lastPosition = EnumMovePosition.LEFT
         }
         if (direction.RIGHT) {
             const toX = player.x + unitMov
             const toXE = toX + player.w
-            const ye = player.y + player.h
-            const y = player.y
-            this.finded = blocks.filter((b: AbstractBlock) => {
-                const bxe = b.x + b.w
-                const bx = b.x
-                const by = b.y
-                const bye = b.y + b.h
-                const xIntersect = bxe > toXE && bx < toXE
-                const yIntersect = y > by && y < bye
-                const yeIntersect = ye < bye && ye > by
-                const blockInPlayer = y <= by && ye >= bye
-                return (xIntersect && (yIntersect || yeIntersect || blockInPlayer))
-            });
+            this.finded = blocks.filter(this.filterRIGHT(toXE, player.y, (player.y + player.h)));
+            if (this.finded.length === 0 && toXE <= player.getWCanvas()) { player.x = toX }
 
-            if (this.finded.length === 0 && toXE <= player.getWCanvas()) {
-                player.x = toX
+            this.lastPosition = EnumMovePosition.RIGHT
+        }
+
+        // Deteccion para items seguin la ultima posicion donde
+        // el personaje miro
+        if (direction.MENU) {
+            this.items[EnumMovePosition.DOWN] = []
+            this.items[EnumMovePosition.LEFT] = []
+            this.items[EnumMovePosition.RIGHT] = []
+            this.items[EnumMovePosition.UP] = []
+
+            const toY = player.y + unitMov
+            const toYE = toY + player.h
+
+            if (this.lastPosition === EnumMovePosition.DOWN) {
+                this.items[EnumMovePosition.DOWN] = blocks.filter(this.filterDOWNFindItems(toYE, player.x, (player.x + player.w), unitMov));
             }
+            if (this.lastPosition === EnumMovePosition.LEFT) {
+                const toX = player.x - unitMov
+                this.items[EnumMovePosition.LEFT] = blocks.filter(this.filterLEFTFindItems(toX, player.y, (player.y + player.h), unitMov));
+            }
+            if (this.lastPosition === EnumMovePosition.RIGHT) {
+                const toX = player.x + unitMov
+                const toXE = toX + player.w
+                this.items[EnumMovePosition.RIGHT] = blocks.filter(this.filterRIGHTFindItems(toXE, player.y, (player.y + player.h), unitMov));
+            }
+            if (this.lastPosition === EnumMovePosition.UP) {
+                const toY = player.y - unitMov;
+                this.items[EnumMovePosition.UP] = blocks.filter(this.filterUPFindItems(toY, player.x, (player.x + player.w), unitMov));
+            }
+            callbackOpenMenu(this.lastPosition, this.items);
         }
 
-        if (this.finded.length > 0) {
-            this.finded.forEach((e: AbstractBlock) => {
-                e.onCollision()
-            })
-        }
+        //if (this.finded.length > 0) {
+        //    this.finded.forEach((e: AbstractBlock) => e.onCollision())
+        //}
+    }
+
+    private filterDOWN(toYE: number, x: number, xe: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bye = b.y + b.h;
+            const bx = b.x;
+            const by = b.y;
+            const bxe = b.x + b.w;
+            const yIntersect = bye > toYE && by < toYE;
+            const xIntersect = x > bx && x < bxe;
+            const xeIntersect = xe < bxe && xe > bx;
+            const blockInPlayer = x <= bx && xe >= bxe;
+            return (yIntersect && (xIntersect || xeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterDOWNFindItems(toYE: number, x: number, xe: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bye = b.y + b.h;
+            const bx = b.x;
+            const by = b.y;
+            const bxe = b.x + b.w;
+            const yIntersect = bye > toYE + unitMov && by < toYE + unitMov;
+            const xIntersect = x > bx && x < bxe;
+            const xeIntersect = xe < bxe && xe > bx;
+            const blockInPlayer = x <= bx && xe >= bxe;
+            return (yIntersect && (xIntersect || xeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterLEFT(toX: number, y: number, ye: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bxe = b.x + b.w;
+            const bx = b.x;
+            const by = b.y;
+            const bye = b.y + b.h;
+            // comprobacion player eje X intersecta con bloque en eje X
+            const xIntersect = bxe > toX && bx < toX;
+            // comprobacion player eje Y estas dentro de un bloque
+            const yIntersect = y > by && y < bye;
+            // comprobacion player eje Y Inferior estas dentro de un bloque
+            const yeIntersect = ye < bye && ye > by;
+            // comprobacion bloque esta dentro del player en eje Y
+            const blockInPlayer = y <= by && ye >= bye;
+            return (xIntersect && (yIntersect || yeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterLEFTFindItems(toX: number, y: number, ye: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bxe = b.x + b.w;
+            const bx = b.x;
+            const by = b.y;
+            const bye = b.y + b.h;
+            const xIntersect = bxe > toX - unitMov && bx < toX - unitMov;
+            const yIntersect = y > by && y < bye;
+            const yeIntersect = ye < bye && ye > by;
+            const blockInPlayer = y <= by && ye >= bye;
+            return (xIntersect && (yIntersect || yeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterRIGHT(toXE: number, y: number, ye: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bxe = b.x + b.w;
+            const bx = b.x;
+            const by = b.y;
+            const bye = b.y + b.h;
+            const xIntersect = bxe > toXE && bx < toXE;
+            const yIntersect = y > by && y < bye;
+            const yeIntersect = ye < bye && ye > by;
+            const blockInPlayer = y <= by && ye >= bye;
+            return (xIntersect && (yIntersect || yeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterRIGHTFindItems(toXE: number, y: number, ye: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bxe = b.x + b.w;
+            const bx = b.x;
+            const by = b.y;
+            const bye = b.y + b.h;
+            const xIntersect = bxe > toXE + unitMov && bx < toXE + unitMov;
+            const yIntersect = y > by && y < bye;
+            const yeIntersect = ye < bye && ye > by;
+            const blockInPlayer = y <= by && ye >= bye;
+            return (xIntersect && (yIntersect || yeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterUP(toY: number, x: number, xe: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bye = b.y + b.h;
+            const bx = b.x;
+            const by = b.y;
+            const bxe = b.x + b.w;
+            const yIntersect = bye > toY && by < toY;
+            const xIntersect = x > bx && x < bxe;
+            const xeIntersect = xe < bxe && xe > bx;
+            const blockInPlayer = x <= bx && xe >= bxe;
+            return (yIntersect && (xIntersect || xeIntersect || blockInPlayer));
+        };
+    }
+
+    private filterUPFindItems(toY: number, x: number, xe: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
+        return (b: AbstractBlock): boolean => {
+            const bye = b.y + b.h;
+            const bx = b.x;
+            const by = b.y;
+            const bxe = b.x + b.w;
+            const yIntersect = bye > toY - unitMov && by - unitMov < toY;
+            const xIntersect = x > bx && x < bxe;
+            const xeIntersect = xe < bxe && xe > bx;
+            const blockInPlayer = x <= bx && xe >= bxe;
+            return (yIntersect && (xIntersect || xeIntersect || blockInPlayer));
+        };
     }
 }
 

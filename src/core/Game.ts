@@ -42,12 +42,15 @@ class Game extends AbstractGame {
         this.sprites[key] = sprite
     }
 
-    addBlock(block: AbstractBlock) {
+    addBlock(block: AbstractBlock) : AbstractBlock {
+        block.setDebug(this.debug)
         block.setContext(this.ctx)
         this.blocks.push(block)
+        return block
     }
 
     addPlayer(player: Player) {
+        player.setDebug(this.debug)
         player.setContext(this.ctx)
         player.setSizeCanvas(this.w, this.h)
         this.player = player

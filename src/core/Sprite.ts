@@ -9,8 +9,8 @@ export type SpriteObj = {
 export type Pos = {
     x: number,
     y: number,
-    w?: number,
-    h?: number
+    w: number,
+    h: number
 }
 export type SpriteMap = {
     [key: string]: Pos,
@@ -49,13 +49,23 @@ class Sprite {
         this.map = props.map
     }
 
-    drawImage(posX: number, posY: number) {
-        this.getContext().drawImage(this.image,
-            this.x, this.y,
-            this.size, this.sizeY || this.size,
-            posX, posY,
-            this.blockSize, this.blockSizeY || this.blockSize);
-    }
+    draw(
+        key: string,
+        x: number,
+        y: number,
+        blockW: number,
+        blockH: number
+        ) {
+            const pos : Pos = this.map[key]
+            this.getContext().drawImage(
+                this.image,
+                pos.x,
+                pos.y,
+                pos.w,
+                pos.h,
+                x, y, blockW, blockH
+            )
+        }
 
     setContext = (ctx: CanvasRenderingContext2D) => this.ctx = ctx
     getContext(): CanvasRenderingContext2D {

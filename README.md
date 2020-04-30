@@ -8,7 +8,13 @@
 - agregar mochila con acciones
 - se quito capa de items, requiere refactorizacion
 - se quito mochila requiere refactor
-- se quito modo debug, requiere refactor
+
+## v0.0.5
+
+- modo debug agregado
+- hitbox ahora retorna los item adyacentes que el player mire con tecla <m>
+
+![game_v0.0.5.png](./doc/game_v0.0.5.png)
 
 ## v0.0.4
 

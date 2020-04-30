@@ -1,5 +1,6 @@
 import HitBox from "./HitBox"
-import Sprite, { Pos } from "./Sprite"
+import Sprite from "./Sprite"
+import Debug from "./Debug"
 
 export interface GameProps {
     targetID: string,
@@ -13,6 +14,7 @@ abstract class AbstractGame {
     private canvas: HTMLCanvasElement
     ctx: CanvasRenderingContext2D
     blockSize: number = 32
+    debug: Debug = new Debug()
 
     w: number
     h: number
@@ -25,13 +27,13 @@ abstract class AbstractGame {
     constructor(props: GameProps) {
         this.w = props.w
         this.h = props.h
-
         this.blockSize = props.blockSize
-
         this.canvas = document.createElement('canvas')
-
         this.target = this.getElement(props.targetID)
         this.ctx = this.getContext()
+
+        this.debug.setContext(this.ctx)
+        this.debug.onDebug()
     }
 
     private getElement(id: string): HTMLElement {
@@ -71,46 +73,28 @@ abstract class AbstractGame {
     // fill() Dibuja una forma solida rellenando el área del trazo.
 
     drawGrid() {
-        this.ctx.lineWidth = 0.5
-        this.ctx.strokeStyle = '#2e2222'
-
-        this.ctx.fillStyle = '#2e2e2e'
-        let n = 0
         // recorrer x
         for (let ix = 0; ix < this.w/ this.blockSize; ix++) {
             // recorrer y
             for (let iy = 0; iy < this.h/this.blockSize; iy++) {
-                n++
-                // pintando grilla
-                //this.ctx.fillRect(
-                //    this.blockSize * ix,
-                //    this.blockSize * iy,
-                //    this.blockSize,
-                //    this.blockSize)
-                //this.ctx.strokeRect(
-                //    this.blockSize * ix,
-                //    this.blockSize * iy,
-                //    this.blockSize,
-                //    this.blockSize)
-
                 if (this.sprite && this.spriteKey) {
                     const k = this.spriteKey
-                    const pos: Pos = this.sprite.map[k]
-                    this.sprite.x = pos.x
-                    this.sprite.y = pos.y
-                    this.sprite.blockSize = this.blockSize
-                    this.sprite.blockSizeY = this.blockSize
-                    this.sprite.size = pos.w || this.blockSize
-                    this.sprite.sizeY = pos.h || this.blockSize
-                    this.sprite.drawImage(
+                    this.sprite.draw(
+                        k,
                         this.blockSize * ix,
-                        this.blockSize * iy)
+                        this.blockSize * iy,
+                        this.blockSize,
+                        this.blockSize)
+                    this.debug.drawBox(
+                        this.blockSize * ix,
+                        this.blockSize * iy,
+                        this.blockSize,
+                        this.blockSize,
+                        'white')
                 }
 
             }
         }
-        console.log(n);
-        
     }
 
     drawClear() {

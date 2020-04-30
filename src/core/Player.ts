@@ -1,7 +1,9 @@
 import InputController, { Keys } from "./InputController";
 import AbstractBlock from "./AbstractBlock";
 import HitBox from "./HitBox";
-import Sprite, { Pos } from "./Sprite";
+import Sprite from "./Sprite";
+import Debug from "./Debug";
+import Block from "./Block";
 
 /**
  * las medidas son con respecto a
@@ -47,7 +49,8 @@ class Player implements IPlayer {
     blocks : AbstractBlock[] = []
     hitBox : HitBox | undefined
     sprite: Sprite
-    posSprite : Pos = {x: 0, y: 0}
+    spriteKey : string = 'd0'
+    debug: Debug | undefined
 
     animationFrameSprite : number = 0
     
@@ -71,14 +74,24 @@ class Player implements IPlayer {
     control = (keys : Keys) => {
 
         const frame = this.animationFrameSprite
-        if(keys.DOWN) { this.posSprite = this.sprite.map[`d${frame}`] }
-        if(keys.UP) { this.posSprite = this.sprite.map[`u${frame}`] }
-        if(keys.RIGHT) { this.posSprite = this.sprite.map[`r${frame}`] }
-        if(keys.LEFT) { this.posSprite = this.sprite.map[`l${frame}`] }
-        if(keys.SPACE) { this.posSprite = this.sprite.map[`d${frame}`] }
+        if(keys.DOWN) { this.spriteKey = `d${frame}` }
+        if(keys.UP) { this.spriteKey = `u${frame}` }
+        if(keys.RIGHT) { this.spriteKey = `r${frame}` }
+        if(keys.LEFT) { this.spriteKey = `l${frame}` }
+        if(keys.SPACE) { this.spriteKey = `d${frame}` }
         // llamo al metodo que verifica colisiones y
         // mueve el player si es posible
-        this.hitBox?.detected(this.blocks, keys, this) 
+        this.hitBox?.detected(this.blocks, keys, this, this.callbackOpenMenu) 
+    }
+
+    callbackOpenMenu = (lastPosition: string, objItems: any ) => {
+        const items : Block[] = objItems[lastPosition]
+        items.forEach((b: Block) => {
+            b.onSelected()
+            console.log(b);
+            
+        });
+        
     }
 
     getVelocity() {
@@ -94,15 +107,17 @@ class Player implements IPlayer {
         throw new Error("getContextError")
     }
 
-    draw(): void {
-        //this.getContext().fillStyle = 'red'
-        //this.getContext().fillRect(this.x,this.y, this.h, this.w)
+    setDebug = (debug: Debug) => this.debug = debug
+    getDebug(): Debug {
+        if (this.debug) return this.debug;
+        throw new Error("getDebugError")
+    }
 
-        this.sprite.x = this.posSprite.x
-        this.sprite.y = this.posSprite.y
-        this.sprite.drawImage(
-            this.x,
-            this.y)
+    draw(): void {
+        this.sprite.draw(this.spriteKey, this.x, this.y, this.w, this.h)
+        this.getDebug().drawBox(
+            this.x, this.y, this.w, this.h,
+            'blue')
     }
 
     addBlocks(blocks : AbstractBlock[]) {
