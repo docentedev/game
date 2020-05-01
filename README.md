@@ -1,13 +1,33 @@
 # MOTOR de Juego 2D sencillo en Vanilla JS
 
+Juego RPG en desarrollo
+El motor esta programado desde 0, no se utilizaron framwork
+todo el despliegue se realiza dentro de un canvas
+escrito en TypeScript
+este proyecto utiliza React solo para utilizar el reload server, por lo tanto el juego esta escrito integramente en JS vanilla (TS en realidad)
+
+## Teclado
+- teclado de dirección para moverce
+- tecla espacio para interactuar con bloques
+- tecla <m> para mostrar menu
+
+
 ## TODOS
 
 - agregar bloques de puerta en items
 - agregar acciones contextuales segun item
-- recoger items
 - agregar mochila con acciones
-- se quito capa de items, requiere refactorizacion
-- se quito mochila requiere refactor
+
+## v0.0.6
+
+- finalmente agregado el menu
+- ya se pueden recoger items
+- item ahora pueden tener title y description
+- se agrego la clase Book que contiene los items del player
+- los items son Block, solo que estan dentro del Book
+- la mochila ahora es un Book
+
+![game_v0.0.6.png](./doc/game_v0.0.6.png)
 
 ## v0.0.5
 

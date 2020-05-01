@@ -9,16 +9,16 @@ import AbstractBlock from './core/AbstractBlock';
 import Book from './core/Book';
 
 Game.init(() => {
-  const blockSize = 36
+  const blockSize = 48
   const resourceUrl = 'http://localhost:3000/images'
   const game = new Game({
     targetID: 'game',
-    w: blockSize * 9, // cuantas unit en x
+    w: blockSize * 12, // cuantas unit en x
     h: blockSize * 19, // cuantas unit en y
     blockSize: blockSize,
   })
 
-  game.onDebug()
+  // game.onDebug()
 
   game.images.addImage('player', `${resourceUrl}/p1.png`)
   game.images.addImage('sprite', `${resourceUrl}/sprites.png`)
@@ -30,21 +30,32 @@ Game.init(() => {
 
     game.addGridSprite(game.sprites['sprite'], 'grass')
 
-    const rompible = game.addBlock(new Block({
-      // Romper automatico
-      // type: EnumBlockType.BREKABLE,
+    const block01 = game.addBlock(new Block({
+      title: 'Piedra antigua',
+      description: 'aun no sirve para algo, es solo un test',
       sprite: game.sprites['sprite'],
       spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
       x: game.bz(4), y: game.bz(4), w: game.bz(1), h: game.bz(1),
     }))
-    rompible.handlerOnSelect((book : Book, block: AbstractBlock) => {
+    block01.handlerOnSelect((book : Book, block: AbstractBlock) => {
       book.items.push(block)
-      game.blocks = game.blocks.filter((b : AbstractBlock) => {
-        if(b.uid !== block.uid) {
-          return true
-        }
-        return false
-      })
+      game.blocks = game.blocks.filter((b : AbstractBlock) => b.uid !== block.uid)
+      console.log(game.blocks);
+      block.visible = false
+    })
+
+    const block02= game.addBlock(new Block({
+      title: 'Piedra olvidada',
+      description: 'solo es un adorno',
+      sprite: game.sprites['sprite'],
+      spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
+      x: game.bz(4), y: game.bz(2), w: game.bz(1), h: game.bz(1),
+    }))
+    block02.handlerOnSelect((book : Book, block: AbstractBlock) => {
+      // logica para quitar un block del juego
+      // y hacerlo parte de los items del player
+      book.items.push(block)
+      game.blocks = game.blocks.filter((b : AbstractBlock) => b.uid !== block.uid)
       console.log(game.blocks);
       block.visible = false
     })

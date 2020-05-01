@@ -12,6 +12,9 @@ export enum EnumBlockType {
  * la unidad base de Game.unit
  */
 export interface BlockProps {
+    title?: string
+    description?: string
+
     x: number
     y: number
     h: number
@@ -23,6 +26,8 @@ export interface BlockProps {
 
 abstract class AbstractBlock {
 
+    title: string
+    description: string
     uid: number | undefined
     x: number;
     y: number;
@@ -42,6 +47,8 @@ abstract class AbstractBlock {
 
     type: EnumBlockType
 
+    bz: Function | undefined
+
     callbackHandlerOnSelect: ((book: Book, block: AbstractBlock) => void) | undefined
     /**
      * 
@@ -49,6 +56,10 @@ abstract class AbstractBlock {
      * @param props.x - Medida en units
      */
     constructor(props: BlockProps) {
+
+        this.title = props.title || ''
+        this.description = props.description || ''
+
         this.x = props.x
         this.y = props.y
         this.w = props.w
@@ -57,6 +68,8 @@ abstract class AbstractBlock {
         this.sprite = props.sprite
         this.spriteTitle = props.spriteTitle
         this.type = props.type || EnumBlockType.BLOCK
+
+
     }
 
     offCollision() {
@@ -78,6 +91,9 @@ abstract class AbstractBlock {
         }
     }
 
+    setBz(bz: (n: number) => number) {
+        this.bz = bz
+    }
     setContext = (ctx: CanvasRenderingContext2D) => this.ctx = ctx
     getContext(): CanvasRenderingContext2D {
         if (this.ctx) return this.ctx;
@@ -95,6 +111,20 @@ abstract class AbstractBlock {
         this.getDebug().drawBox(
             this.x, this.y, this.w, this.h,
             this.debugColor)
+    }
+
+    getBz(n: number): number {
+        if (this.bz) return this.bz(n);
+        throw new Error("Error")
+    }
+
+    drawInfo(x: number, y: number, fontSize: number) {
+        const title = `#${this.uid} ${this.title}`
+
+        this.getContext().font = fontSize +"px Arial";
+        this.getContext().fillStyle = '#000000'
+        this.getContext().fillText(title, x, y);
+        this.getContext().fillText(this.description, x, y + this.getBz(0.375));
     }
 
     // Registro de un callback para cuando se seleccione

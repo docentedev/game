@@ -6,6 +6,12 @@ class Book {
     ctx: CanvasRenderingContext2D | undefined
     debug: Debug | undefined
     bz: Function | undefined
+
+    // medidas relativas con x,y cero del propio menu
+    x0 : number = 0
+    y0 : number = 0
+    isCalc0Size : boolean = false
+
     constructor() { }
 
     items: AbstractBlock[] = []
@@ -30,35 +36,49 @@ class Book {
         throw new Error("Error")
     }
 
+    calc0Size() {
+        if(this.isCalc0Size) return;
+        const ctx = this.getContext()
+        const middleW = ctx.canvas.width / 2
+        const middleBookW = this.getBz(7) / 2
+        this.x0 = middleW - middleBookW
+        const middleH = ctx.canvas.height / 2
+        const middleBookH = this.getBz(6) / 2
+        this.y0 = middleH - middleBookH
+        this.isCalc0Size = true
+    }
+
     draw() {
         if (!this.visible) return;
-        const ctx = this.getContext()
-        const bz = (n : number) => this.getBz(n)
-        this.drawBookOveralay(ctx, bz)
-        this.drawBook(ctx, bz)
+        this.calc0Size()
+        this.drawBookOveralay()
+        this.drawBook()
     }
 
-    private drawBookOveralay(ctx: CanvasRenderingContext2D, bz: (n: number) => number) {
-        const W = ctx.canvas.width
-        const H = ctx.canvas.height
-        ctx.fillStyle = '#00000070'
-        ctx.fillRect(0, 0, W, H)
+    private drawBookOveralay() {
+        const W = this.getContext().canvas.width
+        const H = this.getContext().canvas.height
+        this.getContext().fillStyle = '#00000070'
+        this.getContext().fillRect(0, 0, W, H)
     }
 
-    private drawBook(ctx: CanvasRenderingContext2D, bz: (n: number) => number) {
-        const middleW = ctx.canvas.width / 2
-        const middleBookW = bz(7) / 2
-        const centerW = middleW - middleBookW
-        const middleH = ctx.canvas.height / 2
-        const middleBookH = bz(6) / 2
-        const centerH = middleH - middleBookH
-        ctx.fillStyle = '#ae978b'
-        ctx.fillRect(centerW, centerH, bz(7), bz(6))
+    private drawBook() {
+        let sizeX = this.x0 + this.getBz(0.5)
+        let sizeY = this.y0 + this.getBz(0.5)
+        this.getContext().fillStyle = '#ae978b'
+        this.getContext().fillRect(this.x0, this.y0, this.getBz(7), this.getBz(6))
 
         this.items.forEach((b : AbstractBlock ) => {
             b.visible = true
+            b.x= sizeX
+            b.y = sizeY
             b.draw()
+            b.drawInfo(
+                b.x + this.getBz(1.25),
+                sizeY + this.getBz(0.375),
+                this.getBz(0.25))
+            sizeY = sizeY + this.getBz(1.25)
         })
     }
 }
-export default Book
+export default Book  

@@ -47,6 +47,8 @@ class Game extends AbstractGame {
     addBlock(block: AbstractBlock) : AbstractBlock {
         block.setDebug(this.debug)
         block.setContext(this.ctx)
+        block.setBz(this.bz)
+
         block.uid = this.blockUID
         this.blocks.push(block)
         this.blockUID = this.blockUID + 1

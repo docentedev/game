@@ -81,11 +81,15 @@ class Player {
     }
 
     getVelocity() {
-        return 4
+        return 6
     }
 
     actionCollision(): void {
         throw new Error("Method not implemented.");
+    }
+    setBz(bz: (n: number) => number) {
+        this.bz = bz
+        this.book.bz = bz
     }
     setContext = (ctx: CanvasRenderingContext2D) => {
         this.ctx = ctx
@@ -134,11 +138,6 @@ class Player {
 
     getHCanvas = () => this.hCanvas
     getWCanvas = () => this.wCanvas
-
-    setBz(bz: (n: number) => number) {
-        this.bz = bz
-        this.book.bz = bz
-    }
 }
 
 export default Player
