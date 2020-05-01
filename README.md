@@ -4,13 +4,12 @@ Juego RPG en desarrollo
 El motor esta programado desde 0, no se utilizaron framwork
 todo el despliegue se realiza dentro de un canvas
 escrito en TypeScript
-este proyecto utiliza React solo para utilizar el reload server, por lo tanto el juego esta escrito integramente en JS vanilla (TS en realidad)
+este proyecto utiliza React solo para utilizar el reload server, por lo tanto el juego esta escrito integramente en JS vanilla (TS en realidad
 
-## Teclado
+## Teclado
 - teclado de dirección para moverce
 - tecla espacio para interactuar con bloques
-- tecla <m> para mostrar menu
-
+- tecla `m` para mostrar menu
 
 ## TODOS
 
@@ -20,6 +19,7 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 
 ## v0.0.6
 
+- hitbox ahora retorna los item adyacentes que el player mire con tecla `space`
 - finalmente agregado el menu
 - ya se pueden recoger items
 - item ahora pueden tener title y description
@@ -32,7 +32,7 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 ## v0.0.5
 
 - modo debug agregado
-- hitbox ahora retorna los item adyacentes que el player mire con tecla <m>
+- hitbox ahora retorna los item adyacentes que el player mire con tecla `m`
 
 ![game_v0.0.5.png](./doc/game_v0.0.5.png)
 
