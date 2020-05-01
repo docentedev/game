@@ -13,6 +13,8 @@ class Game extends AbstractGame {
     hitBox: HitBox
     sprites: SpriteObj = {}
 
+    blockUID : number = 0
+
     constructor(props: GameProps) {
         super(props)
         this.images = new ImagesLoader()
@@ -45,14 +47,17 @@ class Game extends AbstractGame {
     addBlock(block: AbstractBlock) : AbstractBlock {
         block.setDebug(this.debug)
         block.setContext(this.ctx)
+        block.uid = this.blockUID
         this.blocks.push(block)
+        this.blockUID = this.blockUID + 1
         return block
     }
 
-    addPlayer(player: Player) {
+    addPlayer = (player: Player) => {
         player.setDebug(this.debug)
         player.setContext(this.ctx)
         player.setSizeCanvas(this.w, this.h)
+        player.setBz(this.bz)
         this.player = player
     }
 
@@ -74,7 +79,7 @@ class Game extends AbstractGame {
 
     onCollision() {
         if (this.player) {
-            this.player.addBlocks(this.blocks)
+            this.player.getBlocks = () => this.blocks
             this.player.addHitBox(this.hitBox)
         }
     }

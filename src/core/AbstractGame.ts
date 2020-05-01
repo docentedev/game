@@ -33,7 +33,6 @@ abstract class AbstractGame {
         this.ctx = this.getContext()
 
         this.debug.setContext(this.ctx)
-        this.debug.onDebug()
     }
 
     private getElement(id: string): HTMLElement {
@@ -50,6 +49,10 @@ abstract class AbstractGame {
             return ctx;
         }
         throw new Error("getContextError")
+    }
+
+    public onDebug() {
+        this.debug.onDebug()
     }
 
     canvasCreate() {

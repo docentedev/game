@@ -6,9 +6,10 @@ import Sprite from './core/Sprite';
 import Player from './core/Player';
 import { playerSpriteMap, objectSpriteMap } from './core/data/sprites';
 import AbstractBlock from './core/AbstractBlock';
+import Book from './core/Book';
 
 Game.init(() => {
-  const blockSize = 48
+  const blockSize = 36
   const resourceUrl = 'http://localhost:3000/images'
   const game = new Game({
     targetID: 'game',
@@ -17,8 +18,11 @@ Game.init(() => {
     blockSize: blockSize,
   })
 
+  game.onDebug()
+
   game.images.addImage('player', `${resourceUrl}/p1.png`)
   game.images.addImage('sprite', `${resourceUrl}/sprites.png`)
+  game.images.addImage('book', `${resourceUrl}/book.png`)
   game.images.onAllLoad(() => {
 
     game.addSprite('player', new Sprite({ image: game.images.getImage('player'), size: 32, x: 0, y: 0, blockSize: game.blockSize, map: playerSpriteMap, }))
@@ -31,15 +35,18 @@ Game.init(() => {
       // type: EnumBlockType.BREKABLE,
       sprite: game.sprites['sprite'],
       spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
-      x: game.bz(4),
-      y: game.bz(4),
-      w: game.bz(1),
-      h: game.bz(1),
+      x: game.bz(4), y: game.bz(4), w: game.bz(1), h: game.bz(1),
     }))
-    rompible.handlerOnSelect((block: AbstractBlock) => {
-      // Romper manual
+    rompible.handlerOnSelect((book : Book, block: AbstractBlock) => {
+      book.items.push(block)
+      game.blocks = game.blocks.filter((b : AbstractBlock) => {
+        if(b.uid !== block.uid) {
+          return true
+        }
+        return false
+      })
+      console.log(game.blocks);
       block.visible = false
-      console.log(block);
     })
 
     game.addBlock(new Block({ sprite: game.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: game.bz(5), y: game.bz(4), w: game.bz(1), h: game.bz(1 / 2) }))
@@ -56,11 +63,6 @@ Game.init(() => {
 })
 
 function App() {
-  return (
-    <div className="App">
-      <div id="game"></div>
-    </div>
-  );
+  return (<div id="game"></div>);
 }
-
 export default App;

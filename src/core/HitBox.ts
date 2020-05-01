@@ -67,7 +67,7 @@ class HitBox {
 
         // Deteccion para items seguin la ultima posicion donde
         // el personaje miro
-        if (direction.MENU) {
+        if (direction.SPACE) {
             this.items[EnumMovePosition.DOWN] = []
             this.items[EnumMovePosition.LEFT] = []
             this.items[EnumMovePosition.RIGHT] = []

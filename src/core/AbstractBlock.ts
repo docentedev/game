@@ -1,5 +1,6 @@
 import Sprite from "./Sprite";
 import Debug from "./Debug";
+import Book from "./Book";
 
 export enum EnumBlockType {
     BLOCK = 'BLOCK',
@@ -20,30 +21,13 @@ export interface BlockProps {
     type?: EnumBlockType
 }
 
-interface IBlock {
-    x: number
-    y: number
-    h: number
-    w: number
-    ctx: CanvasRenderingContext2D | null
-    isCollision: boolean
+abstract class AbstractBlock {
 
-    sprite: Sprite
-    spriteTitle: string
-
-    onCollision(): void
-    draw(): void
-
-    type: EnumBlockType
-}
-
-abstract class AbstractBlock implements IBlock {
-
+    uid: number | undefined
     x: number;
     y: number;
     h: number;
     w: number;
-    isCollision: boolean = false
 
     sprite: Sprite
     spriteTitle: string
@@ -54,11 +38,11 @@ abstract class AbstractBlock implements IBlock {
 
     visible: boolean = true
 
-    ctx: CanvasRenderingContext2D | null = null
+    ctx: CanvasRenderingContext2D | undefined
 
     type: EnumBlockType
 
-    callbackHandlerOnSelect: Function | undefined
+    callbackHandlerOnSelect: ((book: Book, block: AbstractBlock) => void) | undefined
     /**
      * 
      * @param props 
@@ -84,13 +68,13 @@ abstract class AbstractBlock implements IBlock {
     }
 
     // Acciones al accionar
-    onSelected(): void {
+    onSelected(book: Book, block: AbstractBlock): void {
         this.debugColor = 'green'
         if (this.type === EnumBlockType.BREKABLE) {
             this.visible = false
         }
         if (this.callbackHandlerOnSelect) {
-            this.callbackHandlerOnSelect(this)
+            this.callbackHandlerOnSelect(book, block)
         }
     }
 
@@ -114,7 +98,7 @@ abstract class AbstractBlock implements IBlock {
     }
 
     // Registro de un callback para cuando se seleccione
-    handlerOnSelect(callback: Function) {
+    handlerOnSelect(callback: (book : Book, block: AbstractBlock) => void) {
         this.callbackHandlerOnSelect = callback
     }
 }
