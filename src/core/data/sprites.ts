@@ -29,4 +29,7 @@ export const objectSpriteMap = {
     ladrillosVertical: { x: 0, y: 32, w: 160, h: 32 },
     chairDown: { x: 0, y: 96, w: 32, h: 32 },
     chairRight: { x: 128, y: 96, w: 32, h: 32 },
+    cofre: { x: 0, y: 128, w: 32, h: 32 },
+    cofreOpen: { x: 32, y: 128, w: 32, h: 32 },
+    llave: { x: 0, y: 160, w: 32, h: 32 },
 }

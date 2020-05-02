@@ -8,7 +8,7 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 
 ## Teclado
 - teclado de dirección para moverce
-- tecla espacio para interactuar con bloques
+- tecla `space` para interactuar con bloques
 - tecla `m` para mostrar menu
 
 ## TODOS
@@ -16,6 +16,18 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 - agregar bloques de puerta en items
 - agregar acciones contextuales segun item
 - agregar mochila con acciones
+
+## v0.0.6
+
+- ya es posible animar bloques, ver ejemplo de cofre
+- ya es posible agregar un item dentro de un bloque
+- se refactorizo el codigo simplificando
+- eliminado metodos no utilizados
+- eliminadas variable
+- se privatizaron atributos
+- se agrego listado de items en clase `Game`
+
+![game_v0.0.7.png](./doc/game_v0.0.7.png)
 
 ## v0.0.6
 

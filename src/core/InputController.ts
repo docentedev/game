@@ -23,8 +23,8 @@ export type Keys = {
 export type InputControllerCallback = (keys: Keys) => void
 
 class InputController {
-    keys : Keys;
-    callback: Function;
+    private keys : Keys;
+    private callback: Function;
     constructor(callback: InputControllerCallback) {
         this.callback = callback;
         this.initListener();
@@ -39,7 +39,7 @@ class InputController {
         };
     }
 
-    keyResolve (k : number) : EnumMovePosition {
+    private keyResolve (k : number) : EnumMovePosition {
         if (k === 37) return EnumMovePosition.LEFT
         if (k === 32) return EnumMovePosition.SPACE
         if (k === 38) return EnumMovePosition.UP
@@ -49,7 +49,7 @@ class InputController {
         return EnumMovePosition.DEFAULT
     }
     
-    initListener() {
+    private initListener() {
         document.body.addEventListener("keydown", (e) => {
             this.keys[this.keyResolve(e.keyCode)] = true;
             this.keys.STOP = false;

@@ -1,5 +1,5 @@
 import Player from "./Player";
-import AbstractBlock from "./AbstractBlock";
+import Block from "./Block";
 import { Keys, EnumMovePosition } from "./InputController";
 
 /*
@@ -17,19 +17,12 @@ class HitBox {
         [EnumMovePosition.DOWN]: [],
     }
 
-    detected(originalBlocks: AbstractBlock[], direction: Keys, player: Player, callbackOpenMenu: Function) {
+    detected(originalBlocks: Block[], direction: Keys, player: Player, callbackOpenMenu: Function) {
 
-        const solidBlocks: AbstractBlock[] = originalBlocks.filter((b: AbstractBlock): boolean => {
-            return b.visible;
+        // filtrar por bloques visiles y colisionables
+        const blocks: Block[] = originalBlocks.filter((b: Block): boolean => {
+            return b.getIsVisible() && b.getCollision();
         })
-
-        // dejamos off todos los bloques colisionados
-        const blocks = solidBlocks.map((b: AbstractBlock): AbstractBlock => {
-            b.offCollision()
-            return b;
-        })
-
-
 
         const unitMov = player.getVelocity()
         if (direction.DOWN) {
@@ -96,12 +89,12 @@ class HitBox {
         }
 
         //if (this.finded.length > 0) {
-        //    this.finded.forEach((e: AbstractBlock) => e.onCollision())
+        //    this.finded.forEach((e: Block) => e.onCollision())
         //}
     }
 
-    private filterDOWN(toYE: number, x: number, xe: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterDOWN(toYE: number, x: number, xe: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bye = b.y + b.h;
             const bx = b.x;
             const by = b.y;
@@ -114,8 +107,8 @@ class HitBox {
         };
     }
 
-    private filterDOWNFindItems(toYE: number, x: number, xe: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterDOWNFindItems(toYE: number, x: number, xe: number, unitMov: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bye = b.y + b.h;
             const bx = b.x;
             const by = b.y;
@@ -128,8 +121,8 @@ class HitBox {
         };
     }
 
-    private filterLEFT(toX: number, y: number, ye: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterLEFT(toX: number, y: number, ye: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bxe = b.x + b.w;
             const bx = b.x;
             const by = b.y;
@@ -146,8 +139,8 @@ class HitBox {
         };
     }
 
-    private filterLEFTFindItems(toX: number, y: number, ye: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterLEFTFindItems(toX: number, y: number, ye: number, unitMov: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bxe = b.x + b.w;
             const bx = b.x;
             const by = b.y;
@@ -160,8 +153,8 @@ class HitBox {
         };
     }
 
-    private filterRIGHT(toXE: number, y: number, ye: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterRIGHT(toXE: number, y: number, ye: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bxe = b.x + b.w;
             const bx = b.x;
             const by = b.y;
@@ -174,8 +167,8 @@ class HitBox {
         };
     }
 
-    private filterRIGHTFindItems(toXE: number, y: number, ye: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterRIGHTFindItems(toXE: number, y: number, ye: number, unitMov: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bxe = b.x + b.w;
             const bx = b.x;
             const by = b.y;
@@ -188,8 +181,8 @@ class HitBox {
         };
     }
 
-    private filterUP(toY: number, x: number, xe: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterUP(toY: number, x: number, xe: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bye = b.y + b.h;
             const bx = b.x;
             const by = b.y;
@@ -202,8 +195,8 @@ class HitBox {
         };
     }
 
-    private filterUPFindItems(toY: number, x: number, xe: number, unitMov: number): (value: AbstractBlock, index: number, array: AbstractBlock[]) => boolean {
-        return (b: AbstractBlock): boolean => {
+    private filterUPFindItems(toY: number, x: number, xe: number, unitMov: number): (value: Block, index: number, array: Block[]) => boolean {
+        return (b: Block): boolean => {
             const bye = b.y + b.h;
             const bx = b.x;
             const by = b.y;
