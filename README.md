@@ -17,7 +17,7 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 - agregar acciones contextuales segun item
 - agregar mochila con acciones
 
-## v0.0.6
+## v0.0.7
 
 - ya es posible animar bloques, ver ejemplo de cofre
 - ya es posible agregar un item dentro de un bloque
