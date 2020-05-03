@@ -1,6 +1,5 @@
 import Sprite from "./Sprite";
 import Debug from "./Debug";
-import Book from "./Book";
 
 export enum EnumBlockType {
     BLOCK = 'BLOCK',
@@ -59,7 +58,9 @@ class Block {
     // funcion que retorna el tamaño del bloque definido
     private bz: Function | undefined
     // function que se acciona cuando el block es seleccionado con SPACE
-    private cbHandlerOnSelect: ((book: Book, block: Block) => void) | undefined
+    private cbHandlerOnSelect: ((block: Block) => void) | undefined
+
+    private cbHandlerOnInMenuSelect: ((block: Block) => void) | undefined
 
     constructor(props: BlockProps) {
         this.title = props.title || ''
@@ -80,9 +81,9 @@ class Block {
     setIsVisible = (visible: boolean) => { this.visible = visible}
 
     // al seleccionar un bloque se ejecuta este evento
-    onSelected(book: Book, block: Block): void {
+    onSelected(block: Block): void {
         if (this.cbHandlerOnSelect) {
-            this.cbHandlerOnSelect(book, block)
+            this.cbHandlerOnSelect(block)
         }
     }
 
@@ -118,12 +119,24 @@ class Block {
     }
 
     // Registro de un callback para cuando se seleccione
-    handlerOnSelect(cb: (book : Book, block: Block) => void) {
+    handlerOnSelect(cb: (block: Block) => void) {
         this.cbHandlerOnSelect = cb
+    }
+
+    // Registro de un callback para cuando se seleccione dentro del menu
+    handlerOnInMenuSelect(cb: (block: Block) => void) {
+        this.cbHandlerOnInMenuSelect = cb
     }
 
     setSpriteTitle(key: string) {
         this.spriteTitle = key
+    }
+
+    // Acciones
+    onInMenuSelected = () => {
+        if (this.cbHandlerOnInMenuSelect) {
+            this.cbHandlerOnInMenuSelect(this)
+        }
     }
 }
 

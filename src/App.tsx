@@ -5,7 +5,6 @@ import Block from './core/Block';
 import Sprite from './core/Sprite';
 import Player from './core/Player';
 import { playerSpriteMap, objectSpriteMap } from './core/data/sprites';
-import Book from './core/Book';
 
 Game.init(() => {
   const blockSize = 48
@@ -29,6 +28,16 @@ Game.init(() => {
 
     g.addGridSprite(g.sprites['sprite'], 'grass')
 
+    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.blockSize, h: g.blockSize }))
+
+    // Items book
+    const item01 = g.addBlock(new Block({
+      sprite: g.sprites['sprite'],
+      spriteTitle: 'ladrilloBlock',
+      x: g.bz(5), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
+
+    player.book.addItemUnique(g.addBlock(item01))
+    g.removeBlock(item01)
 
     // Items
     const llavePuerta01 = g.addItem(new Block({
@@ -46,11 +55,10 @@ Game.init(() => {
       spriteTitle: 'cofre',
       x: g.bz(4), y: g.bz(4), w: g.bz(1), h: g.bz(1),
     }))
-    block01.handlerOnSelect((book : Book, block: Block) => {
-      //book.addItem(block)
-      //g.removeBlock(block)
+
+    block01.handlerOnSelect((block: Block) => {
       block01.setSpriteTitle('cofreOpen')
-      book.addItemUnique(llavePuerta01)
+      player.book.addItemUnique(llavePuerta01)
       setTimeout(() => block01.setSpriteTitle('cofre'), 200);
     })
 
@@ -61,12 +69,32 @@ Game.init(() => {
       spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
       x: g.bz(4), y: g.bz(2), w: g.bz(1), h: g.bz(1),
     }))
-    block02.handlerOnSelect((book : Book, block: Block) => {
-      book.addItem(block)
+
+    block02.handlerOnSelect((block: Block) => {
+      player.book.addItem(block)
       g.removeBlock(block)
     })
 
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: g.bz(5), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
+    const block03 = g.addBlock(new Block({
+      title: 'Piedra olvidada abridora de cofres',
+      description: 'solo es un adorno',
+      sprite: g.sprites['sprite'],
+      spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
+      x: g.bz(0), y: g.bz(1), w: g.bz(0.5), h: g.bz(1),
+    }))
+
+    block03.handlerOnSelect((block: Block) => {
+      player.book.addExternalItem(block);
+      g.removeBlock(block)
+      player.book.open()
+    })
+
+    block03.handlerOnInMenuSelect((block: Block) => {
+      console.log(block);
+      
+    })
+
+
     g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrillosVertical', x: g.bz(4), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
@@ -74,7 +102,6 @@ Game.init(() => {
     g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'chairDown', x: g.bz(5), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'chairDown', x: g.bz(6), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
 
-    g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.blockSize, h: g.blockSize }))
     g.start()
   })
 })

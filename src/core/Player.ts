@@ -37,6 +37,11 @@ class Player {
     bz: Function | undefined
     getBlocks: (() => Block[]) | undefined
 
+    // X MENU
+    // Y MENU
+    xMenu: number = 0
+    yMenu: number = 0
+
     constructor(props: DimPosProps) {
         this.x = props.x
         this.y = props.y
@@ -50,16 +55,20 @@ class Player {
     }
 
     private control = (keys : Keys) => {
-        const frame = this.animationFrameSprite
-        if(keys.DOWN) { this.spriteKey = `d${frame}` }
-        if(keys.UP) { this.spriteKey = `u${frame}` }
-        if(keys.RIGHT) { this.spriteKey = `r${frame}` }
-        if(keys.LEFT) { this.spriteKey = `l${frame}` }
         // OPEN MENU
         if(keys.MENU) this.book.toggle()
-        // llamo al metodo que verifica colisiones y
-        // mueve el player si es posible
-        if(this.getBlocks) this.hitBox?.detected(this.getBlocks(), keys, this, this.callbackAction) 
+        if(!this.book.getVisible()) {
+            const frame = this.animationFrameSprite
+            if(keys.DOWN) { this.spriteKey = `d${frame}` }
+            if(keys.UP) { this.spriteKey = `u${frame}` }
+            if(keys.RIGHT) { this.spriteKey = `r${frame}` }
+            if(keys.LEFT) { this.spriteKey = `l${frame}` }
+            // llamo al metodo que verifica colisiones y
+            // mueve el player si es posible
+            if(this.getBlocks) this.hitBox?.detected(this.getBlocks(), keys, this, this.callbackAction) 
+        } else {
+            this.book.onMenuSelect(keys); 
+        }
     }
 
     // Accion ejecutada al seleccionar con SPACE un bloque
@@ -69,7 +78,7 @@ class Player {
             // ejecutamos el metodo on selected
             // de esta forma informamos al bloque que debe devolver la
             // acciones a la intancia de bloque creada
-            b.onSelected(this.book, b);
+            b.onSelected(b);
         });
     }
 
@@ -124,6 +133,7 @@ class Player {
 
     getHCanvas = () => this.hCanvas
     getWCanvas = () => this.wCanvas
+ 
 }
 
 export default Player

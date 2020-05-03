@@ -102,7 +102,9 @@ class Game {
     }
 
     // Ciclo de vida
-    private create = () => this.onCollision()
+    private create = () => {
+        this.onCollision()
+    }
 
     private update = () => {
         this.drawClear()
@@ -162,6 +164,7 @@ class Game {
         player.setSizeCanvas(this.w, this.h)
         player.setBz(this.bz)
         this.player = player
+        return player
     }
 
     getBlocks = () => this.blocks
