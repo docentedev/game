@@ -90,8 +90,7 @@ Game.init(() => {
     })
 
     block03.handlerOnInMenuSelect((block: Block) => {
-      console.log(block);
-      
+      console.log(block); 
     })
 
 
