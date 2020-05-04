@@ -25,17 +25,19 @@ export const objectSpriteMap = {
     ladrilloBlockRotoConPiedraHoja: { x: 160, y: 32, w: 32, h: 32 },
     ladrilloBlockRotoConPiedra: { x: 64, y: 32, w: 32, h: 32 },
     ladrilloBlockRoto: { x: 0, y: 32, w: 32, h: 32 },
+    ladrilloNormal: { x: 0, y: 64, w: 32, h: 32 },
     ladrilloBlock: { x: 32, y: 32, w: 64, h: 32 },
     ladrillosVertical: { x: 0, y: 32, w: 160, h: 32 },
-    chairDown: { x: 0, y: 96, w: 32, h: 32 },
+    chairDown: { x: 0, y: 96, w: 32, h: 31 },
     chairRight: { x: 128, y: 96, w: 32, h: 32 },
     cofre: { x: 0, y: 128, w: 32, h: 32 },
     cofreOpen: { x: 32, y: 128, w: 32, h: 32 },
-    llave: { x: 0, y: 160, w: 32, h: 32 },
+    llave: { x: 0, y: 161, w: 32, h: 30 },
     
     puertaHorizontal0: { x: 0, y: 192, w: 32, h: 32 },
     puertaHorizontal1: { x: 32, y: 192, w: 32, h: 32 },
     puertaHorizontal2: { x: 64, y: 192, w: 32, h: 32 },
-    pisoCasa1: { x: 0, y: 224, w: 96, h: 64 },
+    pisoCasa1: { x: 0, y: 224, w: 96, h: 96 },
+    pisoCalle: { x: 0, y: 320, w: 640, h: 128 },
 
 }

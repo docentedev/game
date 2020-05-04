@@ -16,6 +16,13 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 - agregar acciones contextuales segun item
 - agregar mochila con acciones
 
+## v0.0.9
+
+- utilizando el codigo ya creado, se ordena el mapa, para hacerlo mas coherente a un RPG
+- se agregaron algunos tiles nuevos como la calle
+
+![game_v0.0.9.png](./doc/game_v0.0.9.png)
+
 ## v0.0.8
 
 - agregados bloques de puerta

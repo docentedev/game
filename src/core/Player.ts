@@ -82,7 +82,7 @@ class Player {
         });
     }
 
-    getVelocity = () => 6
+    getVelocity = () => 3
 
     setBz(bz: (n: number) => number) {
         // seteamos la funcion bz al propio player y al book
@@ -122,7 +122,7 @@ class Player {
     }
 
     private animationFrame() {
-        const timer = 100
+        const timer = 150
         setInterval(() => {
             this.animationFrameSprite++
             if(this.animationFrameSprite === 4) {

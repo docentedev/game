@@ -9,12 +9,12 @@ import items from './core/data/items';
 import blocks from './core/data/blocks';
 
 Game.init(() => {
-  const blockSize = 32
+  const blockSize = 37
   const resourceUrl = 'http://localhost:3000/images'
   const g = new Game({
     targetID: 'game',
-    w: blockSize * 12, // cuantas unit en x
-    h: blockSize * 19, // cuantas unit en y
+    w: blockSize * 20, // cuantas unit en x
+    h: blockSize * 25, // cuantas unit en y
     blockSize: blockSize,
   })
 
@@ -30,7 +30,11 @@ Game.init(() => {
 
     g.addGridSprite(g.sprites['sprite'], 'grass')
 
-    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.bz(0.8), h: g.bz(0.8) }))
+    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.bz(0.75), h: g.bz(0.75) }))
+
+    // Primero definir piso
+    g.aBlock(blocks.pisoCasa01)
+    g.aBlock(blocks.pisoCalle)
 
     // Items book
     const item01 = g.iBlock(items.ladrilloBlock)
@@ -45,16 +49,13 @@ Game.init(() => {
     g.aBlock(blocks.piedraOlvidada04)
     g.aBlock(blocks.piedraOlvidada05)
 
-    g.aBlock(blocks.pisoCasa01)
-
     const cofre01 = g.aBlock(blocks.cofre01)
     
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrillosVertical', x: g.bz(4), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(6), y: g.bz(2.5), w: g.bz(1), h: g.bz(1 / 2) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(4), y: g.bz(2.5), w: g.bz(1), h: g.bz(1 / 2) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrillosVertical', x: g.bz(0), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
 
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'chairDown', x: g.bz(5), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'chairDown', x: g.bz(6), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'chairDown', x: g.bz(1), y: g.bz(0), w: g.bz(0.8), h: g.bz(0.8) }))
 
     player.book.addItemUnique(item01)
     llavePuerta01.handlerOnInMenuSelect((b : Block) => {
@@ -71,14 +72,20 @@ Game.init(() => {
     })
 
     puerta01.handlerOnSelect((b) => {
-      if(b.getCollision()) {
+      if(player.book.containItem(llavePuerta01)) {
+        player.book.removeItem(llavePuerta01)
         setTimeout(() => b.setTile('puertaHorizontal1'), 100);
         setTimeout(() => b.setTile('puertaHorizontal2'), 200);
         setTimeout(() => b.offCollision(), 300);
-      } else {
-        b.onCollision()
-        setTimeout(() => b.setTile('puertaHorizontal1'), 100);
-        setTimeout(() => b.setTile('puertaHorizontal0'), 200);
+        //if(b.getCollision()) {
+        //  setTimeout(() => b.setTile('puertaHorizontal1'), 100);
+        //  setTimeout(() => b.setTile('puertaHorizontal2'), 200);
+        //  setTimeout(() => b.offCollision(), 300);
+        //} else {
+        //  b.onCollision()
+        //  setTimeout(() => b.setTile('puertaHorizontal1'), 100);
+        //  setTimeout(() => b.setTile('puertaHorizontal0'), 200);
+        //}
       }
       //player.book.open()
       //player.book.removeAllAndAddExternalItem(llavePuerta01)

@@ -10,16 +10,18 @@ const piedraOlvidata = {
     title: 'Piedra olvidada',
     description: 'solo adorno',
     sprite: 'sprite',
-    tile: 'ladrilloBlockRotoConPiedraHoja',
+    tile: 'ladrilloNormal',
     x: 2, y: 2, w: 1, h: 1,
 }
 
-const piedraOlvidada02 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 0, y: 2, w: 1, h: 1 }
-const piedraOlvidada03 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 3, y: 0, w: 1, h: 1 }
-const piedraOlvidada04 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 3, y: 1, w: 1, h: 1 }
-const piedraOlvidada05 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 3, y: 2, w: 1, h: 1 }
+const piedraOlvidada02 = {sprite: 'sprite', tile: 'ladrilloNormal', x: 0, y: 2, w: 1, h: 1 }
+const piedraOlvidada03 = {sprite: 'sprite', tile: 'ladrilloNormal', x: 3, y: 0, w: 1, h: 1 }
+const piedraOlvidada04 = {sprite: 'sprite', tile: 'ladrilloNormal', x: 3, y: 1, w: 1, h: 1 }
+const piedraOlvidada05 = {sprite: 'sprite', tile: 'ladrilloNormal', x: 3, y: 2, w: 1, h: 1 }
 
-const pisoCasa01 = {collision: false, sprite: 'sprite', tile: 'pisoCasa1', x: 0, y: 0, w: 3, h: 2 }
+const pisoCasa01 = {collision: false, sprite: 'sprite', tile: 'pisoCasa1', x: 0, y: 0, w: 3, h: 3 }
+const pisoCalle = {collision: false, sprite: 'sprite', tile: 'pisoCalle', x: 0, y: 3, w: 20, h: 4 }
+
 
 const puerta01 = {
     title: 'Piedra de cofres',
@@ -38,4 +40,5 @@ export default {
     piedraOlvidada04,
     piedraOlvidada05,
     pisoCasa01,
+    pisoCalle,
 }

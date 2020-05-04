@@ -127,7 +127,13 @@ class Book {
     }
 
     // Items solo se agregan items externos si no han sido consumidos
+    containItem(block: Block) : boolean {
+        return !!this.items.find(e => e.uid === block.uid)
+    } 
     addItem = (block: Block) => this.items.push(block)
+    removeItem (block: Block) {
+        this.items = this.items.filter(e => e.uid !== block.uid)
+    }
 
     addExternalItem = (block: Block) => {
         console.log('EXTERNAL ADDED TO BOOK', block);
