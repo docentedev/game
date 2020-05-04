@@ -36,9 +36,14 @@ Game.init(() => {
     const item01 = g.iBlock(items.ladrilloBlock)
     const llavePuerta01 = g.iBlock(items.llaveMaestra)
     const llavePuerta02 = g.iBlock(items.llaveMaestra2)
+    
+    const puerta01 = g.aBlock(blocks.puerta01)
     const cofre01 = g.aBlock(blocks.piedraAntigua)
-    const block02 = g.aBlock(blocks.piedraOlvidata)
-    const block03 = g.aBlock(blocks.piedraOlvidada02)
+    g.aBlock(blocks.piedraOlvidata)
+    g.aBlock(blocks.piedraOlvidada02)
+    g.aBlock(blocks.piedraOlvidada03)
+    g.aBlock(blocks.piedraOlvidada04)
+    g.aBlock(blocks.piedraOlvidada05)
 
     g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
@@ -53,7 +58,6 @@ Game.init(() => {
       b.alreadyConsumed = true
     })
     // bloques
-    
     cofre01.handlerOnSelect(() => {
       cofre01.setTile('cofreOpen')
       player.book.open()
@@ -62,19 +66,29 @@ Game.init(() => {
       setTimeout(() => cofre01.setTile('cofre'), 200);
     })
 
-    block02.handlerOnSelect((block: Block) => {
-      player.book.addItem(block)
-      g.removeBlock(block)
+    puerta01.handlerOnSelect((b) => {
+      setTimeout(() => b.setTile('puertaHorizontal1'), 100);
+      setTimeout(() => b.setTile('puertaHorizontal2'), 200);
+      setTimeout(() => b.offCollision(), 300);
+      //player.book.open()
+      //player.book.removeAllAndAddExternalItem(llavePuerta01)
+      //player.book.addExternalItem(llavePuerta02)
+      //setTimeout(() => cofre01.setTile('cofre'), 200);
     })
 
-    block03.handlerOnSelect((block: Block) => {
-      player.book.addExternalItem(block);
-      g.removeBlock(block)
-      player.book.open()
-    })
-    block03.handlerOnInMenuSelect((block: Block) => {
-      console.log(block); 
-    })
+    //block02.handlerOnSelect((block: Block) => {
+    //  player.book.addItem(block)
+    //  g.removeBlock(block)
+    //})
+
+    //block03.handlerOnSelect((block: Block) => {
+    //  player.book.addExternalItem(block);
+    //  g.removeBlock(block)
+    //  player.book.open()
+    //})
+    //block03.handlerOnInMenuSelect((block: Block) => {
+    //  console.log(block); 
+    //})
 
     g.start()
   })

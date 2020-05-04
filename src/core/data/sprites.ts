@@ -32,4 +32,9 @@ export const objectSpriteMap = {
     cofre: { x: 0, y: 128, w: 32, h: 32 },
     cofreOpen: { x: 32, y: 128, w: 32, h: 32 },
     llave: { x: 0, y: 160, w: 32, h: 32 },
+    
+    puertaHorizontal0: { x: 0, y: 192, w: 32, h: 32 },
+    puertaHorizontal1: { x: 32, y: 192, w: 32, h: 32 },
+    puertaHorizontal2: { x: 64, y: 192, w: 32, h: 32 },
+
 }
