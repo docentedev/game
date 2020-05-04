@@ -24,7 +24,7 @@ export interface BlockProps {
     // sprite a cargar para el block
     sprite: Sprite
     // parte del sprite a mostrar
-    spriteTitle: string
+    tile: string
 
     // el tipo de bloque
     type?: EnumBlockType
@@ -45,7 +45,7 @@ class Block {
     // sprite a cargar para el block
     private sprite: Sprite
     // parte del sprite a mostrar
-    private spriteTitle: string
+    private tile: string
     // funciones extra
     private debug: Debug | undefined
     private debugColor: string = Debug.getRandomColor()
@@ -62,6 +62,11 @@ class Block {
 
     private cbHandlerOnInMenuSelect: ((block: Block) => void) | undefined
 
+    private items : Block[] =[]
+
+    // esta variable debe ser verdadera cuando se consuma en el Book
+    alreadyConsumed : boolean = false
+
     constructor(props: BlockProps) {
         this.title = props.title || ''
         this.description = props.description || ''
@@ -70,7 +75,7 @@ class Block {
         this.w = props.w
         this.h = props.h
         this.sprite = props.sprite
-        this.spriteTitle = props.spriteTitle
+        this.tile = props.tile
         this.type = props.type || EnumBlockType.BLOCK
     }
 
@@ -101,7 +106,7 @@ class Block {
     }
 
     draw(): void {
-        this.visible && this.sprite.draw(this.spriteTitle, this.x, this.y, this.w, this.h)
+        this.visible && this.sprite.draw(this.tile, this.x, this.y, this.w, this.h)
         this.getDebug().drawBox(this.x, this.y, this.w, this.h, this.debugColor)
     }
 
@@ -118,6 +123,10 @@ class Block {
         this.getContext().fillText(this.description, x, y + this.getBz(0.375));
     }
 
+    getItems() {
+        return this.items
+    }
+
     // Registro de un callback para cuando se seleccione
     handlerOnSelect(cb: (block: Block) => void) {
         this.cbHandlerOnSelect = cb
@@ -128,8 +137,8 @@ class Block {
         this.cbHandlerOnInMenuSelect = cb
     }
 
-    setSpriteTitle(key: string) {
-        this.spriteTitle = key
+    setTile(key: string) {
+        this.tile = key
     }
 
     // Acciones

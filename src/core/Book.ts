@@ -23,11 +23,15 @@ class Book {
     yMenu: number = 0
 
     toggle() {
-        this.getDebug().getStatus() && console.log(this)
+        if(!this.visible) {
+            this.removeAllExternalItems()
+        }
+        // this.getDebug().getStatus() && console.log(this)
         this.visible = !this.visible
     }
 
     open() {
+        this.removeAllExternalItems()
         this.getDebug().getStatus() && console.log(this)
         this.visible = true
     }
@@ -82,7 +86,7 @@ class Book {
         let sizeX = this.x0 + this.getBz(0.5)
         let sizeY = this.y0 + this.getBz(0.5)
 
-        let sizeXExternal = this.x0 + this.getBz(3)
+        let sizeXExternal = this.x0 + this.getBz(4)
         let sizeYExternal = this.y0 + this.getBz(0.5)
 
         this.getContext().fillStyle = '#ae978b'
@@ -97,7 +101,8 @@ class Book {
             sizeY = sizeY + this.getBz(1.25)
         })
 
-        this.externalItems.forEach((b : Block ) => {
+        // solo se muestran los items que no han sido consumidos
+        this.externalItems.filter(e => !e.alreadyConsumed).forEach((b : Block ) => {
             b.setIsVisible(true)
             b.x= sizeXExternal
             b.y = sizeYExternal
@@ -111,7 +116,7 @@ class Book {
         let sizeX = this.x0 + this.getBz(0.5)
         let sizeY = this.y0 + this.getBz(0.5)
 
-        const xCalc = sizeX * (this.xMenu + 1)
+        const xCalc = sizeX + (this.getBz(this.xMenu * 3.5))
         const yCalc = sizeY + (this.getBz(this.yMenu) + this.getBz(this.yMenu * 0.25))
 
         this.getContext().strokeStyle = 'red'
@@ -121,12 +126,19 @@ class Book {
             this.getBz(1), this.getBz(1))
     }
 
-    // Items
+    // Items solo se agregan items externos si no han sido consumidos
     addItem = (block: Block) => this.items.push(block)
 
-    addExternalItem = (block: Block) => this.externalItems.push(block)
+    addExternalItem = (block: Block) => {
+        console.log('EXTERNAL ADDED TO BOOK', block);
+        this.externalItems.push(block)
+    }
     removeAllExternalItems = () => { this.externalItems = [] }
 
+    removeAllAndAddExternalItem (block: Block){
+        this.removeAllExternalItems()
+        this.addExternalItem(block)
+    }
     // agregamos items una sola vez, sin que se repita el uid
     // retorna falso si no se puede agregar
     addItemUnique = (block: Block) : boolean => {

@@ -5,6 +5,8 @@ import Block from './core/Block';
 import Sprite from './core/Sprite';
 import Player from './core/Player';
 import { playerSpriteMap, objectSpriteMap } from './core/data/sprites';
+import items from './core/data/items';
+import blocks from './core/data/blocks';
 
 Game.init(() => {
   const blockSize = 48
@@ -16,7 +18,7 @@ Game.init(() => {
     blockSize: blockSize,
   })
 
-  g.onDebug()
+  // g.onDebug()
 
   g.images.addImage('player', `${resourceUrl}/p1.png`)
   g.images.addImage('sprite', `${resourceUrl}/sprites.png`)
@@ -28,78 +30,51 @@ Game.init(() => {
 
     g.addGridSprite(g.sprites['sprite'], 'grass')
 
-    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.blockSize, h: g.blockSize }))
+    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.bz(), h: g.bz() }))
 
     // Items book
-    const item01 = g.addBlock(new Block({
-      sprite: g.sprites['sprite'],
-      spriteTitle: 'ladrilloBlock',
-      x: g.bz(5), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
+    const item01 = g.iBlock(items.ladrilloBlock)
+    const llavePuerta01 = g.iBlock(items.llaveMaestra)
+    const llavePuerta02 = g.iBlock(items.llaveMaestra2)
+    const cofre01 = g.aBlock(blocks.piedraAntigua)
+    const block02 = g.aBlock(blocks.piedraOlvidata)
+    const block03 = g.aBlock(blocks.piedraOlvidada02)
 
-    player.book.addItemUnique(g.addBlock(item01))
-    g.removeBlock(item01)
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrillosVertical', x: g.bz(4), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
 
-    // Items
-    const llavePuerta01 = g.addItem(new Block({
-      title: 'LLave Maestra',
-      description: 'Aun no hace nada',
-      sprite: g.sprites['sprite'],
-      spriteTitle: 'llave',
-      x: g.bz(4), y: g.bz(2), w: g.bz(1), h: g.bz(1),
-    }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'chairDown', x: g.bz(5), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
+    g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'chairDown', x: g.bz(6), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
 
-    const block01 = g.addBlock(new Block({
-      title: 'Piedra antigua',
-      description: 'aun no sirve para algo, es solo un test',
-      sprite: g.sprites['sprite'],
-      spriteTitle: 'cofre',
-      x: g.bz(4), y: g.bz(4), w: g.bz(1), h: g.bz(1),
-    }))
-
-    block01.handlerOnSelect((block: Block) => {
-      block01.setSpriteTitle('cofreOpen')
-      player.book.addItemUnique(llavePuerta01)
-      setTimeout(() => block01.setSpriteTitle('cofre'), 200);
+    player.book.addItemUnique(item01)
+    llavePuerta01.handlerOnInMenuSelect((b : Block) => {
+      !b.alreadyConsumed && player.book.addItem(b)
+      b.alreadyConsumed = true
     })
-
-    const block02= g.addBlock(new Block({
-      title: 'Piedra olvidada',
-      description: 'solo es un adorno',
-      sprite: g.sprites['sprite'],
-      spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
-      x: g.bz(4), y: g.bz(2), w: g.bz(1), h: g.bz(1),
-    }))
+    // bloques
+    
+    cofre01.handlerOnSelect(() => {
+      cofre01.setTile('cofreOpen')
+      player.book.open()
+      player.book.removeAllAndAddExternalItem(llavePuerta01)
+      player.book.addExternalItem(llavePuerta02)
+      setTimeout(() => cofre01.setTile('cofre'), 200);
+    })
 
     block02.handlerOnSelect((block: Block) => {
       player.book.addItem(block)
       g.removeBlock(block)
     })
 
-    const block03 = g.addBlock(new Block({
-      title: 'Piedra olvidada abridora de cofres',
-      description: 'solo es un adorno',
-      sprite: g.sprites['sprite'],
-      spriteTitle: 'ladrilloBlockRotoConPiedraHoja',
-      x: g.bz(0), y: g.bz(1), w: g.bz(0.5), h: g.bz(1),
-    }))
-
     block03.handlerOnSelect((block: Block) => {
       player.book.addExternalItem(block);
       g.removeBlock(block)
       player.book.open()
     })
-
     block03.handlerOnInMenuSelect((block: Block) => {
       console.log(block); 
     })
-
-
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'ladrillosVertical', x: g.bz(4), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
-
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'chairDown', x: g.bz(5), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
-    g.addBlock(new Block({ sprite: g.sprites['sprite'], spriteTitle: 'chairDown', x: g.bz(6), y: g.bz(5), w: g.bz(0.8), h: g.bz(0.8) }))
 
     g.start()
   })

@@ -4,6 +4,7 @@ import Debug from "./Debug"
 import ImagesLoader from "./ImageLoader"
 import Block from "./Block"
 import Player from "./Player"
+import { iBlock } from "./types"
 
 export interface GameProps {
     targetID: string,
@@ -15,21 +16,20 @@ export interface GameProps {
 class Game {
     private target: HTMLElement
     private canvas: HTMLCanvasElement
-    ctx: CanvasRenderingContext2D
-    blockSize: number = 32
+    private ctx: CanvasRenderingContext2D
+    private blockSize: number = 32
     debug: Debug = new Debug()
 
-    w: number
-    h: number
+    private w: number
+    private h: number
 
-    sprite: Sprite | undefined
-    spriteKey: string | undefined
+    private sprite: Sprite | undefined
+    private spriteKey: string | undefined
 
     hitBox: HitBox = new HitBox()
 
     images: ImagesLoader
     blocks: Block[] = []
-    items: Block[] = []
 
     player: Player | undefined
     sprites: SpriteObj = {}
@@ -137,24 +137,13 @@ class Game {
     }
 
     addBlock(block: Block) : Block {
-        block.setDebug(this.debug)
-        block.setContext(this.ctx)
-        block.setBz(this.bz)
-
-        block.uid = this.blockUID
+        if(block.uid === undefined) {
+            block.setDebug(this.debug)
+            block.setContext(this.ctx)
+            block.setBz(this.bz)
+            block.uid = this.nextUID()
+        }
         this.blocks.push(block)
-        this.blockUID = this.blockUID + 1
-        return block
-    }
-
-    addItem(block: Block) : Block {
-        block.setDebug(this.debug)
-        block.setContext(this.ctx)
-        block.setBz(this.bz)
-
-        block.uid = this.blockUID
-        this.items.push(block)
-        this.blockUID = this.blockUID + 1
         return block
     }
 
@@ -172,13 +161,50 @@ class Game {
         this.blocks = this.blocks.filter((b : Block) => b.uid !== block.uid)
     }
     // retorna medidas dependiendo del block size
-    public bz = (n: number) => n * this.blockSize
+    public bz = (n?: number) => (n !== undefined ? n : 1) * this.blockSize
     public onDebug = () => this.debug.onDebug()
     static init: (callback: Function) => void
 
     public start() {
         this.create()
         this.loop(this.update)
+    }
+
+    // get uuid y aumenta el contador
+    private nextUID() {
+        this.blockUID ++
+        return this.blockUID
+    }
+
+    // registra un bloque pero no lo agrega a los bloques del Game
+    // permite que el bloque sea unico
+    public initializeBlock(block: Block) {
+        block.setDebug(this.debug)
+        block.setContext(this.ctx)
+        block.setBz(this.bz)
+        block.uid = this.nextUID()
+        return block
+    }
+
+    // simplificacion de inicializacioens de elementos
+    // initialize block
+    public iBlock(block : iBlock) : Block {
+        return this.initializeBlock(new Block({
+            title: block.title,
+            description: block.description,
+            sprite: this.sprites[block.sprite],
+            tile: block.tile,
+            x: this.bz(block.x), y: this.bz(block.y), w: this.bz(block.w), h: this.bz(block.h),
+          }))
+    }
+    public aBlock(block : iBlock) : Block {
+        return this.addBlock(new Block({
+            title: block.title,
+            description: block.description,
+            sprite: this.sprites[block.sprite],
+            tile: block.tile,
+            x: this.bz(block.x), y: this.bz(block.y), w: this.bz(block.w), h: this.bz(block.h),
+          }))
     }
 }
 
