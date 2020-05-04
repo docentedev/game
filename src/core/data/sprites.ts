@@ -36,5 +36,6 @@ export const objectSpriteMap = {
     puertaHorizontal0: { x: 0, y: 192, w: 32, h: 32 },
     puertaHorizontal1: { x: 32, y: 192, w: 32, h: 32 },
     puertaHorizontal2: { x: 64, y: 192, w: 32, h: 32 },
+    pisoCasa1: { x: 0, y: 224, w: 96, h: 64 },
 
 }

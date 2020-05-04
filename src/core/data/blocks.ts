@@ -1,9 +1,9 @@
-const piedraAntigua = {
+const cofre01 = {
     title: 'Piedra antigua',
     description: 'solo test',
     sprite: 'sprite',
     tile: 'cofre',
-    x: 4, y: 4, w: 1, h: 1,
+    x: 2, y: 0, w: 1, h: 1,
 }
 
 const piedraOlvidata = {
@@ -19,6 +19,7 @@ const piedraOlvidada03 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoj
 const piedraOlvidada04 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 3, y: 1, w: 1, h: 1 }
 const piedraOlvidada05 = {sprite: 'sprite', tile: 'ladrilloBlockRotoConPiedraHoja', x: 3, y: 2, w: 1, h: 1 }
 
+const pisoCasa01 = {collision: false, sprite: 'sprite', tile: 'pisoCasa1', x: 0, y: 0, w: 3, h: 2 }
 
 const puerta01 = {
     title: 'Piedra de cofres',
@@ -30,10 +31,11 @@ const puerta01 = {
 
 export default {
     puerta01,
-    piedraAntigua,
+    cofre01,
     piedraOlvidata,
     piedraOlvidada02,
     piedraOlvidada03,
     piedraOlvidada04,
     piedraOlvidada05,
+    pisoCasa01,
 }

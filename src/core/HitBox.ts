@@ -21,21 +21,25 @@ class HitBox {
 
         // filtrar por bloques visiles y colisionables
         const blocks: Block[] = originalBlocks.filter((b: Block): boolean => {
-            return b.getIsVisible() && b.getCollision();
+            return b.getIsVisible()
+        })
+
+        const collisionableBlocks: Block[] = blocks.filter((b: Block): boolean => {
+            return b.getCollision()
         })
 
         const unitMov = player.getVelocity()
         if (direction.DOWN) {
             const toY = player.y + unitMov
             const toYE = toY + player.h
-            this.finded = blocks.filter(this.filterDOWN(toYE, player.x, (player.x + player.w)));
+            this.finded = collisionableBlocks.filter(this.filterDOWN(toYE, player.x, (player.x + player.w)));
             if (this.finded.length === 0 && toYE <= player.getHCanvas()) { player.y = toY }
 
             this.lastPosition = EnumMovePosition.DOWN
         }
         if (direction.UP) {
             const toY = player.y - unitMov;
-            this.finded = blocks.filter(this.filterUP(toY, player.x, (player.x + player.w)));
+            this.finded = collisionableBlocks.filter(this.filterUP(toY, player.x, (player.x + player.w)));
             if (this.finded.length === 0 && toY >= 0) { player.y = toY }
 
             this.lastPosition = EnumMovePosition.UP
@@ -43,7 +47,7 @@ class HitBox {
         if (direction.LEFT) {
             const toX = player.x - unitMov;
             // buscamos colisiones
-            this.finded = blocks.filter(this.filterLEFT(toX, player.y, (player.y + player.h)));
+            this.finded = collisionableBlocks.filter(this.filterLEFT(toX, player.y, (player.y + player.h)));
             // solo si no intersecto con bloques y aun esta dentro de limite X de Grid
             if (this.finded.length === 0 && toX >= 0) { player.x = toX }
 
@@ -52,7 +56,7 @@ class HitBox {
         if (direction.RIGHT) {
             const toX = player.x + unitMov
             const toXE = toX + player.w
-            this.finded = blocks.filter(this.filterRIGHT(toXE, player.y, (player.y + player.h)));
+            this.finded = collisionableBlocks.filter(this.filterRIGHT(toXE, player.y, (player.y + player.h)));
             if (this.finded.length === 0 && toXE <= player.getWCanvas()) { player.x = toX }
 
             this.lastPosition = EnumMovePosition.RIGHT

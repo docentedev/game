@@ -4,4 +4,5 @@ export type iBlock = {
     sprite: string,
     tile: string,
     x: number, y: number, w?: number, h?:  number
+    collision?: boolean,
 }

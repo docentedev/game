@@ -13,9 +13,16 @@ este proyecto utiliza React solo para utilizar el reload server, por lo tanto el
 
 ## TODOS
 
-- agregar bloques de puerta en items
 - agregar acciones contextuales segun item
 - agregar mochila con acciones
+
+## v0.0.8
+
+- agregados bloques de puerta
+- solucionado un error que permitia agregar varias veces el mismo item
+- agregado suelo
+
+![game_v0.0.8.png](./doc/game_v0.0.8.png)
 
 ## v0.0.7
 

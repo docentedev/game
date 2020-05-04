@@ -28,6 +28,8 @@ export interface BlockProps {
 
     // el tipo de bloque
     type?: EnumBlockType
+
+    collision?: boolean,
 }
 
 class Block {
@@ -77,6 +79,7 @@ class Block {
         this.sprite = props.sprite
         this.tile = props.tile
         this.type = props.type || EnumBlockType.BLOCK
+        this.collision = props.collision === undefined ? true : props.collision
     }
 
     offCollision = () => this.collision = false

@@ -9,7 +9,7 @@ import items from './core/data/items';
 import blocks from './core/data/blocks';
 
 Game.init(() => {
-  const blockSize = 48
+  const blockSize = 32
   const resourceUrl = 'http://localhost:3000/images'
   const g = new Game({
     targetID: 'game',
@@ -30,7 +30,7 @@ Game.init(() => {
 
     g.addGridSprite(g.sprites['sprite'], 'grass')
 
-    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.bz(), h: g.bz() }))
+    const player = g.addPlayer(new Player({ sprite: g.sprites['player'], x: 0, y: 0, w: g.bz(0.8), h: g.bz(0.8) }))
 
     // Items book
     const item01 = g.iBlock(items.ladrilloBlock)
@@ -38,13 +38,17 @@ Game.init(() => {
     const llavePuerta02 = g.iBlock(items.llaveMaestra2)
     
     const puerta01 = g.aBlock(blocks.puerta01)
-    const cofre01 = g.aBlock(blocks.piedraAntigua)
+    
     g.aBlock(blocks.piedraOlvidata)
     g.aBlock(blocks.piedraOlvidada02)
     g.aBlock(blocks.piedraOlvidada03)
     g.aBlock(blocks.piedraOlvidada04)
     g.aBlock(blocks.piedraOlvidada05)
 
+    g.aBlock(blocks.pisoCasa01)
+
+    const cofre01 = g.aBlock(blocks.cofre01)
+    
     g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(6), y: g.bz(4), w: g.bz(1), h: g.bz(1 / 2) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrilloBlock', x: g.bz(5), y: g.bz(4.5), w: g.bz(1), h: g.bz(1 / 2) }))
     g.addBlock(new Block({ sprite: g.sprites['sprite'], tile: 'ladrillosVertical', x: g.bz(4), y: g.bz(7), w: g.bz(5), h: g.bz(1) }))
@@ -67,9 +71,15 @@ Game.init(() => {
     })
 
     puerta01.handlerOnSelect((b) => {
-      setTimeout(() => b.setTile('puertaHorizontal1'), 100);
-      setTimeout(() => b.setTile('puertaHorizontal2'), 200);
-      setTimeout(() => b.offCollision(), 300);
+      if(b.getCollision()) {
+        setTimeout(() => b.setTile('puertaHorizontal1'), 100);
+        setTimeout(() => b.setTile('puertaHorizontal2'), 200);
+        setTimeout(() => b.offCollision(), 300);
+      } else {
+        b.onCollision()
+        setTimeout(() => b.setTile('puertaHorizontal1'), 100);
+        setTimeout(() => b.setTile('puertaHorizontal0'), 200);
+      }
       //player.book.open()
       //player.book.removeAllAndAddExternalItem(llavePuerta01)
       //player.book.addExternalItem(llavePuerta02)

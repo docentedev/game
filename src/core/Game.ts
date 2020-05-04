@@ -203,6 +203,7 @@ class Game {
             description: block.description,
             sprite: this.sprites[block.sprite],
             tile: block.tile,
+            collision: block.collision,
             x: this.bz(block.x), y: this.bz(block.y), w: this.bz(block.w), h: this.bz(block.h),
           }))
     }
