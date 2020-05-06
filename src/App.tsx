@@ -9,11 +9,11 @@ import items from './core/data/items';
 import blocks from './core/data/blocks';
 
 Game.init(() => {
-  const blockSize = 37
+  const blockSize = 30
   const resourceUrl = 'http://localhost:3000/images'
   const g = new Game({
     targetID: 'game',
-    w: blockSize * 20, // cuantas unit en x
+    w: blockSize * 24, // cuantas unit en x
     h: blockSize * 25, // cuantas unit en y
     blockSize: blockSize,
   })
@@ -48,6 +48,10 @@ Game.init(() => {
     g.aBlock(blocks.piedraOlvidada03)
     g.aBlock(blocks.piedraOlvidada04)
     g.aBlock(blocks.piedraOlvidada05)
+
+    g.bank.playerItems = [puerta01, puerta01, puerta01]
+    g.bank.externalItems = [puerta01, puerta01, puerta01]
+
 
     const cofre01 = g.aBlock(blocks.cofre01)
     

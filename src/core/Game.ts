@@ -5,6 +5,7 @@ import ImagesLoader from "./ImageLoader"
 import Block from "./Block"
 import Player from "./Player"
 import { iBlock } from "./types"
+import Bank from "./Bank"
 
 export interface GameProps {
     targetID: string,
@@ -35,6 +36,9 @@ class Game {
     sprites: SpriteObj = {}
     blockUID : number = 0
 
+    // Banco
+    bank: Bank = new Bank()
+
     constructor(props: GameProps) {
         this.w = props.w
         this.h = props.h
@@ -46,6 +50,9 @@ class Game {
         this.ctx = this.getContext()
         this.debug.setContext(this.ctx)
         this.canvasCreate()
+
+        this.bank.setBz(this.bz)
+        this.bank.setContext(this.ctx)
     }
 
     private getElement(id: string): HTMLElement {
@@ -111,6 +118,7 @@ class Game {
         this.drawGrid()
         this.drawBlocks()
         this.drawPlayer()
+        this.bank.draw()
         this.loop(this.update)
     }
 
